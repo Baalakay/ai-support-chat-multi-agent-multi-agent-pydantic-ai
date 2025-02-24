@@ -1,0 +1,226 @@
+---
+description: Documentation best practices and standards
+globs: ["**/*.py", "**/*.md", "**/*.rst"]
+---
+# Attributes
+role: Documentation Expert
+extends: [3_python.mdc](mdc:.cursor/rules/3_python.mdc)
+priority: 8
+
+# Documentation Standards
+Version: 1.0.1
+
+# Core Requirements
+1. EVERY Python docstring MUST use Google format:
+```python
+"""One line summary.
+
+Extended description.
+
+Args:
+    param1 (type): Description
+    param2 (type): Description
+
+Returns:
+    type: Description
+
+Raises:
+    Error: Description
+
+Examples:
+    >>> example_code
+"""
+```
+
+2. EVERY documentation reference MUST include:
+```markdown
+[Name](mdc:url)
+Version: {version}
+Last Checked: {date}
+```
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "docstring_writing"
+      triggers:
+        - "writing function docstring"
+        - "documenting class"
+        - "documenting module"
+        - "adding documentation"
+      validation:
+        - check: "Am I documenting code functionality?"
+          if_true:
+            blocked_thoughts:
+              - "Documentation can be added later"
+              - "The code is self-documenting"
+              - "This is a simple function"
+              - "I'll remember what this does"
+            required_thoughts:
+              - "ALL code must be documented"
+              - "Documentation is part of the code"
+              - "Future maintainers need context"
+              - "Must follow Google style"
+            immediate_actions:
+              - "STOP and check docstring format"
+              - "Verify all parameters documented"
+              - "Confirm return value documented"
+              - "Check for usage examples"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "missing_docstring"
+              matches: ["def [^\"]*:", "class [^\"]*:"]
+              reason: "All functions and classes must have docstrings"
+            - pattern: "incomplete_docstring"
+              matches: ["Args:", "Returns:", "Raises:"]
+              reason: "Docstrings must document all components"
+          required:
+            - pattern: "google_style"
+              description: "Use Google docstring format"
+              example: |
+                def process_data(data: str, options: Dict[str, Any]) -> Result:
+                    """Process the input data with given options.
+                    
+                    Extended description of what this function does, its behavior,
+                    and any important details that users should know.
+                    
+                    Args:
+                        data: The input data to process
+                        options: Configuration options where:
+                            - key1: Description of first option
+                            - key2: Description of second option
+                    
+                    Returns:
+                        A Result object containing the processed data
+                    
+                    Raises:
+                        ValueError: If data is invalid
+                        ConfigError: If options are invalid
+                    
+                    Examples:
+                        >>> result = process_data("test", {"mode": "fast"})
+                        >>> print(result.status)
+                        'success'
+                    """
+
+    - phase: "readme_maintenance"
+      triggers:
+        - "creating project"
+        - "updating README"
+        - "documenting setup"
+        - "adding instructions"
+      validation:
+        - check: "Am I working on project-level documentation?"
+          if_true:
+            blocked_thoughts:
+              - "README can be minimal"
+              - "Users will figure it out"
+              - "Setup is straightforward"
+            required_thoughts:
+              - "README is the project's face"
+              - "Must cover all setup steps"
+              - "Include usage examples"
+              - "Document dependencies"
+            immediate_actions:
+              - "STOP and verify README sections"
+              - "Check setup instructions"
+              - "Validate example completeness"
+      enforcement:
+        patterns:
+          required:
+            - pattern: "readme_sections"
+              description: "Required README sections"
+              sections:
+                - "Project Description"
+                - "Installation"
+                - "Usage"
+                - "Configuration"
+                - "Development Setup"
+                - "Testing"
+            - pattern: "setup_instructions"
+              description: "Complete setup steps"
+              example: |
+                ```bash
+                # Installation steps
+                rye sync
+                rye run test
+                ```
+
+    - phase: "type_documentation"
+      triggers:
+        - "adding type hints"
+        - "documenting types"
+        - "updating signatures"
+      validation:
+        - check: "Am I documenting types?"
+          if_true:
+            blocked_thoughts:
+              - "Types are obvious"
+              - "Python is dynamic"
+              - "Type hints are optional"
+            required_thoughts:
+              - "ALL functions need type hints"
+              - "Types are documentation"
+              - "Enable static analysis"
+              - "Help IDE completion"
+            immediate_actions:
+              - "STOP and check type hints"
+              - "Verify import annotations"
+              - "Check complex types"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "missing_types"
+              matches: ["def [^\\(]*\\([^:]*\\):"]
+              reason: "All functions must have type hints"
+          required:
+            - pattern: "type_imports"
+              description: "Import typing modules"
+              example: "from typing import List, Optional, Dict"
+            - pattern: "return_types"
+              description: "Document return types"
+              example: "def func() -> str:"
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check documentation requirements"
+      - "Verify style guidelines"
+      - "Confirm type hints needed"
+      - "Review existing docs"
+    
+    during_action:
+      - "Monitor documentation completeness"
+      - "Check style compliance"
+      - "Verify type accuracy"
+      - "Validate examples"
+    
+    post_action:
+      - "Verify all sections present"
+      - "Check format consistency"
+      - "Confirm type coverage"
+      - "Validate against style guide"
+
+  # Context Boundaries
+  context_boundaries:
+    docstring_writing:
+      style_guide: "google"
+      required_sections: ["summary", "description", "args", "returns", "raises"]
+      validation_timing: "BEFORE_AND_DURING_EDIT"
+    
+    readme_maintenance:
+      required_sections: ["description", "installation", "usage", "development"]
+      format: "markdown"
+      validation_timing: "BEFORE_COMMIT"
+    
+    type_documentation:
+      required_elements: ["param_types", "return_type"]
+      allow_postpone: false
+      validation_timing: "DURING_DEVELOPMENT"

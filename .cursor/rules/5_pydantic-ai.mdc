@@ -1,0 +1,243 @@
+---
+description: PydanticAI v0.0.24 best practices and patterns
+globs: ["**/*.py"]
+---
+# Attributes
+role: PydanticAI Expert
+extends: [4_pydantic.mdc](mdc:.cursor/rules/4_pydantic.mdc)
+priority: 5
+
+# PydanticAI Best Practices
+Version: 0.0.25
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "confidence_check"
+      triggers:
+        - "implementing feature"
+        - "writing agent code"
+        - "making changes"
+        - "adding agent tools"
+        - "implementing delegation"
+        - "handling messages"
+      validation:
+        - check: "Am I confident about this PydanticAI code?"
+          if_true:
+            blocked_thoughts:
+              - "Can figure it out"
+              - "Documentation optional"
+              - "Trial and error works"
+              - "Basic agent is enough"
+            required_thoughts:
+              - "Must be >= 95% confident"
+              - "Must check documentation"
+              - "Must understand patterns"
+              - "Must verify agent patterns"
+            immediate_actions:
+              - "STOP and assess confidence"
+              - "Use @ to load relevant docs"
+              - "Review examples"
+              - "Verify understanding"
+              - "Check delegation patterns if relevant"
+      enforcement:
+        patterns:
+          required:
+            - pattern: "confidence_check"
+              description: "Confidence validation"
+              confidence_threshold: 0.95
+              documentation_refs:
+                - @PydanticAI  # Load general PydanticAI docs
+                - @Pydantic-AI Multi Agent Delegation  # Load when working with agent delegation
+
+    - phase: "agent_definition"
+      triggers:
+        - "creating new agent"
+        - "defining agent class"
+        - "implementing agent"
+        - "extending agent"
+      validation:
+        - check: "Am I defining a PydanticAI agent?"
+          if_true:
+            blocked_thoughts:
+              - "I can skip the base class"
+              - "ConfigDict isn't needed"
+              - "System message can be simple"
+              - "Type hints are optional"
+            required_thoughts:
+              - "Must inherit from Agent[Dependencies]"
+              - "Must configure with ConfigDict"
+              - "Must define clear system message"
+              - "Must use proper type hints"
+            immediate_actions:
+              - "STOP and verify agent structure"
+              - "Check base class inheritance"
+              - "Verify configuration"
+              - "Review system message"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "missing_config"
+              matches: ["class .*\\(Agent\\):"]
+              reason: "Must include ConfigDict configuration"
+            - pattern: "invalid_inheritance"
+              matches: ["class .*(?<!Agent\\[Dependencies\\]):"]
+              reason: "Must inherit from Agent[Dependencies]"
+          required:
+            - pattern: "proper_agent"
+              description: "Correct agent definition"
+              example: |
+                class MyAgent(Agent[Dependencies]):
+                    """Agent description."""
+                    model_config = ConfigDict(
+                        arbitrary_types_allowed=True,
+                        model=get_settings().default_model,
+                        temperature=get_settings().default_temperature,
+                        extra="forbid"
+                    )
+
+    - phase: "tool_implementation"
+      triggers:
+        - "adding agent tool"
+        - "implementing method"
+        - "creating tool"
+        - "defining operation"
+      validation:
+        - check: "Am I implementing an agent tool?"
+          if_true:
+            blocked_thoughts:
+              - "Regular method is fine"
+              - "Decorator isn't needed"
+              - "Context is optional"
+              - "Logging can be added later"
+            required_thoughts:
+              - "Must use @Agent.tool decorator"
+              - "Must include RunContext"
+              - "Must implement logging"
+              - "Must handle errors properly"
+            immediate_actions:
+              - "STOP and check tool structure"
+              - "Verify decorator usage"
+              - "Check context handling"
+              - "Review logging implementation"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "missing_decorator"
+              matches: ["async def (?!@Agent\\.tool)"]
+              reason: "Agent tools must use @Agent.tool decorator"
+            - pattern: "missing_context"
+              matches: ["def .*\\(self(?!, ctx)"]
+              reason: "Tools must accept RunContext parameter"
+          required:
+            - pattern: "proper_tool"
+              description: "Correct tool implementation"
+              example: |
+                @Agent.tool
+                async def process(
+                    self,
+                    ctx: RunContext[Dependencies],
+                    data: str
+                ) -> Result:
+                    """Tool description."""
+                    ctx.log.info("processing", {"data": len(data)})
+
+    - phase: "logging_implementation"
+      triggers:
+        - "adding logs"
+        - "implementing logging"
+        - "tracking usage"
+        - "error handling"
+      validation:
+        - check: "Am I implementing logging?"
+          if_true:
+            blocked_thoughts:
+              - "Print statements are fine"
+              - "Basic logging is enough"
+              - "Can log strings directly"
+              - "Error details optional"
+            required_thoughts:
+              - "Must use structured logging"
+              - "Must track token usage"
+              - "Must include context"
+              - "Must log all errors"
+            immediate_actions:
+              - "STOP and verify logging"
+              - "Check structured format"
+              - "Verify token tracking"
+              - "Review error handling"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "print_logging"
+              matches: ["print\\(", "logger\\."]
+              reason: "Use logfire structured logging"
+            - pattern: "string_logging"
+              matches: ["log\\.(info|error)\\([^{]"]
+              reason: "Use structured log data"
+          required:
+            - pattern: "proper_logging"
+              description: "Correct logging implementation"
+              example: |
+                ctx.log.info("operation_name", {
+                    "request_tokens": ctx.usage.current.get("request_tokens"),
+                    "response_tokens": ctx.usage.current.get("response_tokens"),
+                    "details": {"operation": "process"}
+                })
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check agent structure requirements"
+      - "Verify tool implementation needs"
+      - "Confirm logging requirements"
+      - "Review existing patterns"
+      - "Assess confidence level"
+      - "Load relevant documentation"
+    
+    during_action:
+      - "Monitor implementation patterns"
+      - "Check decorator usage"
+      - "Verify logging structure"
+      - "Validate type hints"
+      - "Verify confidence maintained"
+    
+    post_action:
+      - "Verify agent configuration"
+      - "Check tool completeness"
+      - "Confirm logging coverage"
+      - "Validate error handling"
+      - "Review confidence assessment"
+
+  # Context Boundaries
+  context_boundaries:
+    agent_definition:
+      required_elements: ["base_class", "config", "system_message"]
+      validation_timing: "BEFORE_IMPLEMENTATION"
+    
+    tool_implementation:
+      required_elements: ["decorator", "context", "logging"]
+      validation_timing: "DURING_IMPLEMENTATION"
+    
+    logging_implementation:
+      required_elements: ["structured_data", "token_tracking"]
+      allow_basic_logging: false
+      validation_timing: "CONTINUOUS"
+      
+    confidence_assessment:
+      confidence_threshold: 0.95
+      documentation_required: true
+      doc_loading_method: "cursor_composer"  # Use Cursor's '@' reference system
+      doc_refs:
+        - @PydanticAI  # General PydanticAI documentation
+        - @Pydantic-AI Multi Agent Delegation  # For agent delegation, messaging, tools
+      validation_timing: "BEFORE_IMPLEMENTATION"
+      context_specific_docs:
+        agent_delegation: "@Pydantic-AI Multi Agent Delegation"
+        general: "@PydanticAI"

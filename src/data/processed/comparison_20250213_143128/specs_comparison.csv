@@ -1,0 +1,34 @@
+Category,Specification,520R,980F
+Electrical_Specifications - Power,Power,,
+Electrical_Specifications - Voltage,Switching,120 VDC - maximum,500 VDC - maximum
+Electrical_Specifications - Voltage,Breakdown,400 VDC - minimum,"5,000 VDC - minimum"
+Electrical_Specifications - Current,Switching,0.25 Amp - maximum,1.5 Amp - maximum
+Electrical_Specifications - Current,Carry,2.0 Amp - maximum,5.0 Amp - maximum
+Electrical_Specifications - Resistance,Initial Contact Resistance,0.15 Ohm - maximum,0.10 Ohm - maximum
+Electrical_Specifications - Resistance,Insulation Resistance,1 E9 Ohm - minimum,1 E11 Ohm - minimum
+Electrical_Specifications - Capacitance,Contact,1.7 pF - typical,1.0 pF - typical
+Electrical_Specifications - Temperature,Operating,-40 to +125 °C - maximum,-60 to +125 °C
+Electrical_Specifications - Temperature,Storage,-40 to +200 °C,-100 to +200 °C
+Magnetic_Specifications - Pull - In Range,Pull - In Range,,
+Magnetic_Specifications - Test Coil,Test Coil,,
+Physical_Operational_Specifications - Capsule Volume,Excluding Leads,0.11 CC - nominal,1.21 CC - nominal
+Physical_Operational_Specifications - Contact Material,Contact Material,,
+Physical_Operational_Specifications - Operate Time,Including Bounce,1.00 mSeconds - maximum,3.00 mSeconds - maximum
+Physical_Operational_Specifications - Release Time,Release Time,,
+Electrical_Specifications - Power,Power,,
+Electrical_Specifications - Voltage,Switching,120 VDC - maximum,500 VDC - maximum
+Electrical_Specifications - Voltage,Breakdown,400 VDC - minimum,"5,000 VDC - minimum"
+Electrical_Specifications - Current,Switching,0.25 Amp - maximum,1.5 Amp - maximum
+Electrical_Specifications - Current,Carry,2.0 Amp - maximum,5.0 Amp - maximum
+Electrical_Specifications - Resistance,Initial Contact Resistance,0.15 Ohm - maximum,0.10 Ohm - maximum
+Electrical_Specifications - Resistance,Insulation Resistance,1 E9 Ohm - minimum,1 E11 Ohm - minimum
+Electrical_Specifications - Capacitance,Contact,1.7 pF - typical,1.0 pF - typical
+Electrical_Specifications - Temperature,Operating,-40 to +125 °C - maximum,-60 to +125 °C
+Electrical_Specifications - Temperature,Storage,-40 to +200 °C,-100 to +200 °C
+Magnetic_Specifications - Pull - In Range,Pull - In Range,,
+Magnetic_Specifications - Test Coil,Test Coil,,
+Physical_Operational_Specifications - Capsule Volume,Excluding Leads,0.11 CC - nominal,1.21 CC - nominal
+Physical_Operational_Specifications - Contact Material,Contact Material,,
+Physical_Operational_Specifications - Operate Time,Including Bounce,1.00 mSeconds - maximum,3.00 mSeconds - maximum
+Physical_Operational_Specifications - Release Time,Release Time,,
+Diagram,Path,src/data/diagrams/520R.png,src/data/diagrams/980F.png

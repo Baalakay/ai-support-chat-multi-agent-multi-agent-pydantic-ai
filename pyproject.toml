@@ -1,0 +1,148 @@
+[project]
+name = "pydantic-ai-pdf-rag-agent"
+version = "0.1.0"
+description = "AI-powered PDF analysis and comparison agent"
+authors = [
+    {name = "Blake McDonald", email = "BlakeTMcDonald@gmail.com"}
+]
+requires-python = ">=3.12"
+readme = "README.md"
+dependencies = [
+    "pyyaml>=6.0.1",
+    "watchdog>=3.0.0",
+    "typing-extensions>=4.9.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.7.1",
+    "logfire>=3.5.3",
+    # FastAPI Framework and Dependencies
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "python-dotenv>=1.0.1",
+    "PyJWT>=2.8.0",
+    # AI and Logging
+    "openai",
+    "tiktoken",
+    "pydantic-ai[logfire]>=0.0.24",
+    # HTTP and Data Processing
+    "httpx",
+    "numpy",
+    "pandas",
+    # Redis
+    "redis>=5.2.1",
+    # PDF Processing
+    "PyMuPDF",
+    "pdfplumber",
+    "argon2-cffi>=23.0.0",
+    # Supabase and Dependencies
+    "supabase>=2.13.0",
+    "postgrest>=0.19.0,<0.20.0",
+    "debugpy>=1.8.12",
+    # Required for Supabase API error handling
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.5",
+    "pytest-cov>=4.1.0",
+    "mypy>=1.8.0",
+    "ruff>=0.2.0",
+    "types-python-jose>=3.3.4",
+    "types-python-dateutil>=2.8.19",
+]
+
+[tool.rye.scripts]
+dev = "uvicorn ai_support_agent.main:app --reload"
+test = "pytest"
+lint = "ruff check ."
+format = "ruff format ."
+fix = "ruff check --fix ."
+typecheck = "mypy src"
+
+[tool.ruff]
+src = ["src"]
+target-version = "py312"
+line-length = 100
+# Never enforce `E501` (line length violations)
+ignore = ["E501"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+    "D",  # pydocstyle
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+# Enable docstring checking
+select = ["D"]
+ignore = ["D100", "D104"]
+# Ignore missing docstrings in public modules and packages
+extend-ignore = ["D100", "D104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["D"]  # Ignore docstring rules in tests
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --cov"
+testpaths = ["src"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+plugins = ["pydantic.mypy"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ai_support_agent"]
+
+[tool.hatch.build]
+include = [
+    "src/**/*.py",
+    "src/**/*.json",
+    "src/**/*.yaml",
+    "src/**/*.mdc",
+]
+exclude = [
+    "src/**/__pycache__",
+    "src/**/*.pyc",
+    "src/**/*.pyo",
+    "src/**/*.pyd",
+    "src/**/.pytest_cache",
+    "src/**/.mypy_cache",
+] 

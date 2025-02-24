@@ -1,0 +1,35 @@
+{
+    "analyze_technical_details": {
+        "name": "Technical Detail Analysis",
+        "description": "Generates detailed technical analysis for product specifications",
+        "prompt_template": "Analyze these technical specifications:\n{specs}\n\nFocus areas:\n{areas}\n\nProvide a detailed technical analysis for each relevant section. For each specification:\n- Explain technical significance\n- Highlight performance implications\n- Note industry standards\n- Indicate importance level\n- Provide context for values",
+        "llm_config": {
+            "model": "gpt-4",
+            "api_key": "",
+            "temperature": 0.2,
+            "max_tokens": 1500
+        }
+    },
+    "compare_products": {
+        "name": "Product Comparison",
+        "description": "Identifies and analyzes key differences between products",
+        "prompt_template": "Compare these products:\n{products}\n\nFocus areas:\n{areas}\n\nIdentify and analyze key technical differences. For each difference:\n- Specify the exact specification\n- Compare values between products\n- Explain the technical impact\n- Provide recommendations\n- Consider practical implications",
+        "llm_config": {
+            "model": "gpt-4",
+            "api_key": "",
+            "temperature": 0.2,
+            "max_tokens": 1000
+        }
+    },
+    "generate_recommendations": {
+        "name": "Product Recommendations",
+        "description": "Generates specific product recommendations based on analysis",
+        "prompt_template": "Based on:\nProducts: {products}\nTechnical Analysis: {analysis}\nKey Differences: {differences}\n\nGenerate specific product recommendations. Consider:\n- Use case optimization\n- Technical requirements\n- Performance needs\n- Industry standards\n- Cost-benefit trade-offs\n\nFormat each recommendation as a clear, actionable statement.",
+        "llm_config": {
+            "model": "gpt-4",
+            "api_key": "",
+            "temperature": 0.3,
+            "max_tokens": 800
+        }
+    }
+} 

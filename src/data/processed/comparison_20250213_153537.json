@@ -1,0 +1,510 @@
+{
+  "model_numbers": [
+    "520R",
+    "980F"
+  ],
+  "comparison_id": "ff07cf14-425a-4853-8e39-cfe367d67cbb",
+  "timestamp": "2025-02-13T15:35:37.228410",
+  "features": [
+    {
+      "text": "\u2022 Hermetically sealed Rhodium contacts",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Materials are Lead free and RoHS compliant",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Industry standard size",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Vacuum sealed Rhodium contacts",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Leaded glass currently exempted from RoHS requirements",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Voltage Breakdown determined at 100\u00b5A Max leakage current",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    }
+  ],
+  "advantages": [
+    {
+      "text": "\u2022 Extended operations in extreme environments",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Not ESD sensitive",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Excellent historical performance",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Ideal for reed relays",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Q measurement at least 60% of pure Copper wire",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Insertion loss < 0.01dB up to 30MHz",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 RF Isolation > 50dB up to 30MHz",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    }
+  ],
+  "specifications": [
+    {
+      "section": "Electrical_Specifications",
+      "category": "Voltage",
+      "specification": "Switching",
+      "values": {
+        "520R": {
+          "value": "120",
+          "unit": "VDC - maximum",
+          "display_value": "120 VDC - maximum"
+        },
+        "980F": {
+          "value": "500",
+          "unit": "VDC - maximum",
+          "display_value": "500 VDC - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Voltage",
+      "specification": "Breakdown",
+      "values": {
+        "520R": {
+          "value": "400",
+          "unit": "VDC - minimum",
+          "display_value": "400 VDC - minimum"
+        },
+        "980F": {
+          "value": "5,000",
+          "unit": "VDC - minimum",
+          "display_value": "5,000 VDC - minimum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Current",
+      "specification": "Switching",
+      "values": {
+        "520R": {
+          "value": "0.25",
+          "unit": "Amp - maximum",
+          "display_value": "0.25 Amp - maximum"
+        },
+        "980F": {
+          "value": "1.5",
+          "unit": "Amp - maximum",
+          "display_value": "1.5 Amp - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Current",
+      "specification": "Carry",
+      "values": {
+        "520R": {
+          "value": "2.0",
+          "unit": "Amp - maximum",
+          "display_value": "2.0 Amp - maximum"
+        },
+        "980F": {
+          "value": "5.0",
+          "unit": "Amp - maximum",
+          "display_value": "5.0 Amp - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Resistance",
+      "specification": "Initial Contact Resistance",
+      "values": {
+        "520R": {
+          "value": "0.15",
+          "unit": "Ohm - maximum",
+          "display_value": "0.15 Ohm - maximum"
+        },
+        "980F": {
+          "value": "0.10",
+          "unit": "Ohm - maximum",
+          "display_value": "0.10 Ohm - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Resistance",
+      "specification": "Insulation Resistance",
+      "values": {
+        "520R": {
+          "value": "1",
+          "unit": "E9 Ohm - minimum",
+          "display_value": "1 E9 Ohm - minimum"
+        },
+        "980F": {
+          "value": "1",
+          "unit": "E11 Ohm - minimum",
+          "display_value": "1 E11 Ohm - minimum"
+        }
+      },
+      "has_differences": false
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Capacitance",
+      "specification": "Contact",
+      "values": {
+        "520R": {
+          "value": "1.7",
+          "unit": "pF - typical",
+          "display_value": "1.7 pF - typical"
+        },
+        "980F": {
+          "value": "1.0",
+          "unit": "pF - typical",
+          "display_value": "1.0 pF - typical"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Temperature",
+      "specification": "Operating",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +125 \u00b0C - maximum",
+          "display_value": "-40 to +125 \u00b0C - maximum"
+        },
+        "980F": {
+          "value": "-60",
+          "unit": "to +125 \u00b0C",
+          "display_value": "-60 to +125 \u00b0C"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Temperature",
+      "specification": "Storage",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +200 \u00b0C",
+          "display_value": "-40 to +200 \u00b0C"
+        },
+        "980F": {
+          "value": "-100",
+          "unit": "to +200 \u00b0C",
+          "display_value": "-100 to +200 \u00b0C"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Physical_Operational_Specifications",
+      "category": "Capsule Volume",
+      "specification": "Excluding Leads",
+      "values": {
+        "520R": {
+          "value": "0.11",
+          "unit": "CC - nominal",
+          "display_value": "0.11 CC - nominal"
+        },
+        "980F": {
+          "value": "1.21",
+          "unit": "CC - nominal",
+          "display_value": "1.21 CC - nominal"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Physical_Operational_Specifications",
+      "category": "Operate Time",
+      "specification": "Including Bounce",
+      "values": {
+        "520R": {
+          "value": "1.00",
+          "unit": "mSeconds - maximum",
+          "display_value": "1.00 mSeconds - maximum"
+        },
+        "980F": {
+          "value": "3.00",
+          "unit": "mSeconds - maximum",
+          "display_value": "3.00 mSeconds - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Voltage",
+      "specification": "Switching",
+      "values": {
+        "520R": {
+          "value": "120",
+          "unit": "VDC - maximum",
+          "display_value": "120 VDC - maximum"
+        },
+        "980F": {
+          "value": "500",
+          "unit": "VDC - maximum",
+          "display_value": "500 VDC - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Voltage",
+      "specification": "Breakdown",
+      "values": {
+        "520R": {
+          "value": "400",
+          "unit": "VDC - minimum",
+          "display_value": "400 VDC - minimum"
+        },
+        "980F": {
+          "value": "5,000",
+          "unit": "VDC - minimum",
+          "display_value": "5,000 VDC - minimum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Current",
+      "specification": "Switching",
+      "values": {
+        "520R": {
+          "value": "0.25",
+          "unit": "Amp - maximum",
+          "display_value": "0.25 Amp - maximum"
+        },
+        "980F": {
+          "value": "1.5",
+          "unit": "Amp - maximum",
+          "display_value": "1.5 Amp - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Current",
+      "specification": "Carry",
+      "values": {
+        "520R": {
+          "value": "2.0",
+          "unit": "Amp - maximum",
+          "display_value": "2.0 Amp - maximum"
+        },
+        "980F": {
+          "value": "5.0",
+          "unit": "Amp - maximum",
+          "display_value": "5.0 Amp - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Resistance",
+      "specification": "Initial Contact Resistance",
+      "values": {
+        "520R": {
+          "value": "0.15",
+          "unit": "Ohm - maximum",
+          "display_value": "0.15 Ohm - maximum"
+        },
+        "980F": {
+          "value": "0.10",
+          "unit": "Ohm - maximum",
+          "display_value": "0.10 Ohm - maximum"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Resistance",
+      "specification": "Insulation Resistance",
+      "values": {
+        "520R": {
+          "value": "1",
+          "unit": "E9 Ohm - minimum",
+          "display_value": "1 E9 Ohm - minimum"
+        },
+        "980F": {
+          "value": "1",
+          "unit": "E11 Ohm - minimum",
+          "display_value": "1 E11 Ohm - minimum"
+        }
+      },
+      "has_differences": false
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Capacitance",
+      "specification": "Contact",
+      "values": {
+        "520R": {
+          "value": "1.7",
+          "unit": "pF - typical",
+          "display_value": "1.7 pF - typical"
+        },
+        "980F": {
+          "value": "1.0",
+          "unit": "pF - typical",
+          "display_value": "1.0 pF - typical"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Temperature",
+      "specification": "Operating",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +125 \u00b0C - maximum",
+          "display_value": "-40 to +125 \u00b0C - maximum"
+        },
+        "980F": {
+          "value": "-60",
+          "unit": "to +125 \u00b0C",
+          "display_value": "-60 to +125 \u00b0C"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Electrical_Specifications",
+      "category": "Temperature",
+      "specification": "Storage",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +200 \u00b0C",
+          "display_value": "-40 to +200 \u00b0C"
+        },
+        "980F": {
+          "value": "-100",
+          "unit": "to +200 \u00b0C",
+          "display_value": "-100 to +200 \u00b0C"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Physical_Operational_Specifications",
+      "category": "Capsule Volume",
+      "specification": "Excluding Leads",
+      "values": {
+        "520R": {
+          "value": "0.11",
+          "unit": "CC - nominal",
+          "display_value": "0.11 CC - nominal"
+        },
+        "980F": {
+          "value": "1.21",
+          "unit": "CC - nominal",
+          "display_value": "1.21 CC - nominal"
+        }
+      },
+      "has_differences": true
+    },
+    {
+      "section": "Physical_Operational_Specifications",
+      "category": "Operate Time",
+      "specification": "Including Bounce",
+      "values": {
+        "520R": {
+          "value": "1.00",
+          "unit": "mSeconds - maximum",
+          "display_value": "1.00 mSeconds - maximum"
+        },
+        "980F": {
+          "value": "3.00",
+          "unit": "mSeconds - maximum",
+          "display_value": "3.00 mSeconds - maximum"
+        }
+      },
+      "has_differences": true
+    }
+  ],
+  "differences_count": 20,
+  "diagram_paths": {
+    "520R": "src/data/diagrams/520R.png",
+    "980F": "src/data/diagrams/980F.png"
+  },
+  "metadata": {
+    "source": "pdf_processor",
+    "version": "1.0.0"
+  }
+}

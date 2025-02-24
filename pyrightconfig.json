@@ -1,0 +1,7 @@
+{
+    "venvPath": "/usr/local/python/3.12.8",
+    "venv": ".",
+    "extraPaths": [
+        "/usr/local/python/3.12.8/lib/python3.12/site-packages"
+    ]
+} 

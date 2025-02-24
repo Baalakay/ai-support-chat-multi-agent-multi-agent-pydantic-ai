@@ -1,0 +1,423 @@
+{
+  "model_numbers": [
+    "520R",
+    "980F"
+  ],
+  "comparison_id": "11568245-281f-4022-a7df-21a25de9c048",
+  "features": [
+    {
+      "text": "\u2022 Hermetically sealed Rhodium contacts",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Materials are Lead free and RoHS compliant",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Industry standard size",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Vacuum sealed Rhodium contacts",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Leaded glass currently exempted from RoHS requirements",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Voltage Breakdown determined at 100\u00b5A Max leakage current",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    }
+  ],
+  "advantages": [
+    {
+      "text": "\u2022 Extended operations in extreme environments",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Not ESD sensitive",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Excellent historical performance",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Ideal for reed relays",
+      "models": {
+        "520R": true,
+        "980F": false
+      }
+    },
+    {
+      "text": "\u2022 Q measurement at least 60% of pure Copper wire",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 Insertion loss < 0.01dB up to 30MHz",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    },
+    {
+      "text": "\u2022 RF Isolation > 50dB up to 30MHz",
+      "models": {
+        "520R": false,
+        "980F": true
+      }
+    }
+  ],
+  "specifications": [
+    {
+      "section": "Diagram",
+      "category": "Path",
+      "specification": "Location",
+      "values": {
+        "520R": {
+          "value": "src/data/diagrams/520R_diagram.png",
+          "unit": null,
+          "display_value": "src/data/diagrams/520R_diagram.png"
+        }
+      },
+      "has_differences": false,
+      "analysis": null
+    },
+    {
+      "section": "Power",
+      "category": "",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "3",
+          "unit": null,
+          "display_value": "3"
+        },
+        "980F": {
+          "value": "25",
+          "unit": null,
+          "display_value": "25"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Voltage",
+      "category": "Switching",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "120",
+          "unit": null,
+          "display_value": "120"
+        },
+        "980F": {
+          "value": "500",
+          "unit": null,
+          "display_value": "500"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Voltage",
+      "category": "Breakdown",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "400",
+          "unit": null,
+          "display_value": "400"
+        },
+        "980F": {
+          "value": "5,000",
+          "unit": null,
+          "display_value": "5,000"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Current",
+      "category": "Switching",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "0.25",
+          "unit": null,
+          "display_value": "0.25"
+        },
+        "980F": {
+          "value": "1.5",
+          "unit": null,
+          "display_value": "1.5"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Current",
+      "category": "Carry",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "2.0",
+          "unit": null,
+          "display_value": "2.0"
+        },
+        "980F": {
+          "value": "5.0",
+          "unit": null,
+          "display_value": "5.0"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Resistance",
+      "category": "Initial Contact Resistance",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "0.15",
+          "unit": null,
+          "display_value": "0.15"
+        },
+        "980F": {
+          "value": "0.10",
+          "unit": null,
+          "display_value": "0.10"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Resistance",
+      "category": "Insulation Resistance",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "1",
+          "unit": "E9",
+          "display_value": "1 E9"
+        },
+        "980F": {
+          "value": "1",
+          "unit": "E11",
+          "display_value": "1 E11"
+        }
+      },
+      "has_differences": false,
+      "analysis": null
+    },
+    {
+      "section": "Capacitance",
+      "category": "Contact",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "1.7",
+          "unit": null,
+          "display_value": "1.7"
+        },
+        "980F": {
+          "value": "1.0",
+          "unit": null,
+          "display_value": "1.0"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Temperature",
+      "category": "Operating",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +125",
+          "display_value": "-40 to +125"
+        },
+        "980F": {
+          "value": "-60",
+          "unit": "to +125",
+          "display_value": "-60 to +125"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Temperature",
+      "category": "Storage",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "-40",
+          "unit": "to +200",
+          "display_value": "-40 to +200"
+        },
+        "980F": {
+          "value": "-100",
+          "unit": "to +200",
+          "display_value": "-100 to +200"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Pull - In Range",
+      "category": "",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "15-45",
+          "unit": null,
+          "display_value": "15-45"
+        },
+        "980F": {
+          "value": "60-125",
+          "unit": null,
+          "display_value": "60-125"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Test Coil",
+      "category": "",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "Coil",
+          "unit": "II",
+          "display_value": "Coil II"
+        },
+        "980F": {
+          "value": "Coil",
+          "unit": "III",
+          "display_value": "Coil III"
+        }
+      },
+      "has_differences": false,
+      "analysis": null
+    },
+    {
+      "section": "Capsule Volume",
+      "category": "Excluding Leads",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "0.11",
+          "unit": null,
+          "display_value": "0.11"
+        },
+        "980F": {
+          "value": "1.21",
+          "unit": null,
+          "display_value": "1.21"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Contact Material",
+      "category": "",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "Rhodium",
+          "unit": null,
+          "display_value": "Rhodium"
+        },
+        "980F": {
+          "value": "Rhodium",
+          "unit": null,
+          "display_value": "Rhodium"
+        }
+      },
+      "has_differences": false,
+      "analysis": null
+    },
+    {
+      "section": "Operate Time",
+      "category": "Including Bounce",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "1.00",
+          "unit": null,
+          "display_value": "1.00"
+        },
+        "980F": {
+          "value": "3.00",
+          "unit": null,
+          "display_value": "3.00"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    },
+    {
+      "section": "Release Time",
+      "category": "",
+      "specification": "",
+      "values": {
+        "520R": {
+          "value": "0.80",
+          "unit": null,
+          "display_value": "0.80"
+        },
+        "980F": {
+          "value": "1.20",
+          "unit": null,
+          "display_value": "1.20"
+        }
+      },
+      "has_differences": true,
+      "analysis": null
+    }
+  ],
+  "differences_count": 13
+}

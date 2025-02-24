@@ -1,0 +1,73 @@
+{
+    "name": "Python Dev Env",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/pydantic-ai-pdf-rag-agent",
+    "remoteUser": "vscode",
+    "remoteEnv": {
+        "LOCAL_WORKSPACE_FOLDER": "${containerWorkspaceFolder}",
+        "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+        "ANTHROPIC_API_KEY": "${localEnv:OPENAI_API_KEY}",
+        "GEMINI_API_KEY": "${localEnv:GEMINI_API_KEY}",
+        "VITE_OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+        "MYPY_CONFIG_FILE": "backend/mypy.ini"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "true"
+        },
+        "ghcr.io/devcontainers/features/node:1": { "version": "lts" },
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers-extra/features/pre-commit:2": {},
+        "ghcr.io/devcontainers-contrib/features/ruff:1": {},
+        "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
+        "ghcr.io/jungaretti/features/vim:1": {},
+        "ghcr.io/devcontainers-extra/features/fzf:1": {},
+        "ghcr.io/devcontainers-extra/features/fd:1": {},
+        "ghcr.io/kreemer/features/stow:1": {},
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+        "ghcr.io/devcontainers-extra/features/vercel-cli:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.profiles.linux": { "zsh": { "path": "/bin/zsh", "args": ["-l", "-i"] } },
+                "terminal.integrated.defaultProfile.osx": "zsh",
+                "terminal.integrated.profiles.osx": { "zsh": { "path": "/bin/zsh", "args": ["-l", "-i"] } },
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "mypy-type-checker.enabled": true,
+                "mypy-type-checker.path": ["/usr/local/bin/mypy"],
+                "mypy-type-checker.args": [
+                    "--config-file",
+                    "backend/mypy.ini"
+                ],
+                "typescript.tsdk": "frontend/node_modules/typescript/lib"
+            },
+            "extensions": [
+                // "ms-python.mypy-type-checker",
+                // "ms-python.pyright",
+                // "ms-python.vscode-pylance",
+                // "charliermarsh.ruff",
+                // "ms-azuretools.vscode-docker"
+                // "tamasfe.even-better-toml",
+                // "njpwerner.autodocstring",
+                "ms-python.debugpy"
+                // "ms-toolsai.jupyter",
+                // "bradlc.vscode-tailwindcss"
+            ]
+        }
+    },
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/Documents/devcontainer_shared,target=/home/vscode/devcontainer_shared,type=bind,consistency=cache",
+        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}/.zsh_history,target=/home/vscode/.zsh_history,type=bind"
+    ],
+    "forwardPorts": [5173, 8000, 6379, 5678],
+
+    "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

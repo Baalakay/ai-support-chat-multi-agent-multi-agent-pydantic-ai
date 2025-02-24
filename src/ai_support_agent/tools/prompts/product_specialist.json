@@ -1,0 +1,15 @@
+{
+    "name": "Product Technical Analysis",
+    "description": "Analyzes product specifications to provide technical insights, comparisons, and recommendations",
+    "prompt_template": "Analyze these products and their specifications:\n\nProducts:\n{products}\n\nFocus Areas:\n{focus_areas}\n\nProvide a comprehensive technical analysis including:\n\n1. Technical Analysis\n- Detailed analysis by section\n- Performance characteristics\n- Technical implications\n- Compliance with standards\n\n2. Recommendations\n- Best use cases\n- Specific recommendations\n- Important considerations\n\n3. Comparative Analysis (if multiple products)\n- Key technical differences\n- Performance trade-offs\n- Relative advantages\n\nEnsure analysis is:\n- Technically precise\n- Practically relevant\n- Well-structured\n- Focused on specified areas\n- Actionable for decision-making",
+    "llm_config": {
+        "model": "gpt-4",
+        "api_key": "",
+        "temperature": 0.2,
+        "max_tokens": 2000
+    },
+    "version": "1.0.0",
+    "last_modified": null,
+    "modified_by": null
+} 
+

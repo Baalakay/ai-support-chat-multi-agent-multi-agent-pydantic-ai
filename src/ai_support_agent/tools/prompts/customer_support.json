@@ -1,0 +1,14 @@
+{
+    "name": "Customer Support Analysis",
+    "description": "Analyzes customer queries to determine intent, extract model numbers, and set display preferences",
+    "prompt_template": "Analyze this customer query about our products:\n\n{query}\n\nAvailable model numbers: {available_models}\n\nProduct specification structure:\n{spec_structure}\n\nProvide a structured analysis with:\n1. Query type (single/multi/specific)\n2. Identified model numbers\n3. Focus areas for analysis\n4. Display preferences\n\nConsider:\n- Technical terminology used\n- Implicit comparison requests\n- Specific features mentioned\n- Level of technical detail needed\n- Best way to present information\n\nIf clarification is needed, specify what needs to be clarified.",
+    "llm_config": {
+        "model": "gpt-4-turbo-preview",
+        "api_key": "",
+        "temperature": 0.3,
+        "max_tokens": 1000
+    },
+    "version": "1.0.0",
+    "last_modified": null,
+    "modified_by": null
+} 

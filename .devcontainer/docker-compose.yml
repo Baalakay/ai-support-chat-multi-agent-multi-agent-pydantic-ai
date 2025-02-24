@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 3.12-bookworm
+    volumes:
+      - ..:/workspaces/pydantic-ai-pdf-rag-agent:cached
+      - ${HOME}${USERPROFILE}/Documents/devcontainer_shared:/home/vscode/devcontainer_shared:cached
+      - ${HOME}/.gitconfig:/home/vscode/.gitconfig:cached
+      - ${HOME}${USERPROFILE}/.zsh_history:/home/vscode/.zsh_history:cached
+    
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+    # Required for ptrace-based debuggers like Python debugger
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+
+    # Use "remoteUser" in **devcontainer.json** to run as a non-root user
+    user: vscode
+
+#     # Connect to Redis service
+#     depends_on:
+#       - redis
+
+#   redis:
+#     image: redis:7.2-alpine
+#     restart: unless-stopped
+#     ports:
+#       - "6379:6379"
+#     volumes:
+#       - redis-data:/data
+#     command: redis-server --appendonly yes
+
+# volumes:
+#   redis-data: 

@@ -1,0 +1,305 @@
+---
+description: Security best practices for handling sensitive information
+globs: ["**/*.py", "**/*.env", "**/*.yaml"]
+---
+---
+description: Security best practices for handling sensitive information
+globs: ["**/*.py", "**/*.env", "**/*.yaml"]
+variables:
+  banned_list_path: ".cursor/rules/86_banned_list.md"
+---
+# Attributes
+role: Security Expert
+extends: [3_python.mdc](mdc:.cursor/rules/3_python.mdc)
+priority: 7
+
+# Security Best Practices
+Version: 1.0.1
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "credential_handling"
+      triggers:
+        - "handling API keys"
+        - "storing passwords"
+        - "managing secrets"
+        - "database credentials"
+        - "service tokens"
+      validation:
+        - check: "Am I handling sensitive information?"
+          if_true:
+            blocked_thoughts:
+              - "I can hardcode this for now"
+              - "It's just a test credential"
+              - "This is internal only"
+              - "I'll move it to env vars later"
+            required_thoughts:
+              - "ALL credentials must use environment variables"
+              - "NEVER commit sensitive data"
+              - "Must validate credential presence"
+              - "Need clear error messages for missing credentials"
+            immediate_actions:
+              - "STOP and verify credential handling"
+              - "Check for hardcoded secrets"
+              - "Verify environment variable usage"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "hardcoded_credentials"
+              matches: ["API_KEY = \"", "PASSWORD = \"", "TOKEN = \""]
+              reason: "Use environment variables for credentials"
+            - pattern: "committed_env_file"
+              matches: [".env", "*.env"]
+              reason: "Never commit .env files"
+          required:
+            - pattern: "environment_loading"
+              description: "Load credentials from environment"
+              example: "os.getenv('API_KEY')"
+            - pattern: "credential_validation"
+              description: "Validate required credentials"
+              example: "if not api_key: raise ValueError"
+
+    - phase: "error_handling"
+      triggers:
+        - "handling errors"
+        - "logging exceptions"
+        - "returning error messages"
+      validation:
+        - check: "Am I exposing error information?"
+          if_true:
+            blocked_thoughts:
+              - "Detailed errors help debugging"
+              - "Stack traces are useful"
+              - "Internal errors can be shown"
+            required_thoughts:
+              - "Never expose internal errors"
+              - "Must sanitize error messages"
+              - "Log detailed errors internally only"
+              - "Return generic messages externally"
+            immediate_actions:
+              - "STOP and check error exposure"
+              - "Verify error sanitization"
+              - "Check logging security"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "exposed_errors"
+              matches: ["str(e)", "repr(e)", "traceback"]
+              reason: "Don't expose internal errors"
+          required:
+            - pattern: "sanitized_errors"
+              description: "Return safe error messages"
+              example: "{'error': 'An internal error occurred'}"
+
+    - phase: "input_validation"
+      triggers:
+        - "receiving user input"
+        - "processing external data"
+        - "handling API requests"
+      validation:
+        - check: "Am I handling external input?"
+          if_true:
+            blocked_thoughts:
+              - "Input is already validated"
+              - "This is internal data"
+              - "Validation can be added later"
+            required_thoughts:
+              - "ALL external input must be validated"
+              - "Never trust client data"
+              - "Validate before processing"
+            immediate_actions:
+              - "STOP and check input validation"
+              - "Verify data sanitization"
+              - "Check validation completeness"
+      enforcement:
+        patterns:
+          required:
+            - pattern: "input_validation"
+              description: "Validate all external input"
+              example: "validate_input(data)"
+            - pattern: "type_checking"
+              description: "Check data types"
+              example: "isinstance(value, str)"
+
+    - phase: "banned_library_check"
+      triggers:
+        - "importing library"
+        - "adding dependency"
+        - "using tool"
+        - "running command"
+        - "updating requirements"
+        - "installing package"
+        - "package management"
+      validation:
+        - check: "Am I using a banned library or tool?"
+          if_true:
+            blocked_thoughts:
+              - "It's just for testing"
+              - "It's a common tool"
+              - "It's easier to use"
+              - "It's just temporary"
+              - "We're in a container"
+              - "This is an exception"
+              - "Just this once"
+              - "Quick fix"
+            required_thoughts:
+              - "Must check banned libraries list"
+              - "Must use approved alternatives"
+              - "Must follow project standards"
+              - "No exceptions allowed"
+              - "Container is not an exception"
+              - "Quick fixes must still comply"
+            immediate_actions:
+              - "STOP and check ${banned_list_path}"
+              - "Verify against banned list"
+              - "Use approved alternative"
+              - "Update if needed"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "banned_library_usage"
+              description: "Check against banned libraries list"
+              validation: |
+                1. MUST check ${banned_list_path} before:
+                   - Adding any new dependency
+                   - Using any library or tool
+                   - Running any package management command
+                   - Importing any module
+                2. ANY match against banned list MUST:
+                   - Immediately stop the action
+                   - Use the recommended alternative
+                   - Log the prevention
+                   - Update any related files
+              example: |
+                # Before any library/tool usage:
+                1. Check ${banned_list_path}
+                2. If library/tool is banned:
+                   - STOP
+                   - Use recommended alternative
+                   - Update related files
+                3. If unsure:
+                   - Check ${banned_list_path} again
+                   - Ask for clarification
+                   - Default to prevention
+            - pattern: "command_validation"
+              description: "Pre-execution command validation"
+              matches: [
+                "pip(?!\\s+install\\s+--upgrade\\s+rye)",  # Block pip unless upgrading rye
+                "poetry\\s+",
+                "pipenv\\s+",
+                "easy_install\\s+",
+                "conda\\s+install",
+                "npm\\s+install",  # Block other package managers too
+                "yarn\\s+add",
+                "apt\\s+install",
+                "apt-get\\s+install"
+              ]
+              reason: "Use rye for package management"
+              pre_execution_check: true  # Must validate before any command execution
+              validation_timing: "BEFORE_COMMAND"
+              error_message: "BLOCKED: Use 'rye' instead of banned package managers"
+            - pattern: "exception_prevention"
+              description: "Prevent exception justifications"
+              matches: [
+                "container exception",
+                "docker exception",
+                "temporary fix",
+                "quick solution",
+                "just this once",
+                "bypass check",
+                "skip validation"
+              ]
+              reason: "No exceptions allowed - use approved tools"
+              validation_timing: "CONTINUOUS"
+              error_message: "BLOCKED: No exceptions allowed to package management rules"
+          required:
+            - pattern: "rye_usage"
+              description: "Enforce rye usage"
+              matches: [
+                "rye\\s+add",
+                "rye\\s+sync",
+                "rye\\s+remove",
+                "rye\\s+run"
+              ]
+              validation_timing: "BEFORE_COMMAND"
+              error_message: "REQUIRED: Use 'rye' for package management"
+            - pattern: "validation_logging"
+              description: "Log all validation checks"
+              example: |
+                log.info("package_validation", {
+                    "command": command,
+                    "validated": true,
+                    "banned_list_checked": true
+                })
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check for credential handling"
+      - "Verify error handling approach"
+      - "Confirm input validation"
+      - "Review security implications"
+    
+    during_action:
+      - "Monitor for security patterns"
+      - "Check credential usage"
+      - "Verify error sanitization"
+      - "Validate input handling"
+    
+    post_action:
+      - "Verify no exposed secrets"
+      - "Check error message safety"
+      - "Confirm input validation"
+
+  # Context Boundaries
+  context_boundaries:
+    credential_handling:
+      allowed_patterns: ["environment_variables", "secret_management"]
+      blocked_patterns: ["hardcoded_credentials", "committed_secrets"]
+      validation_timing: "BEFORE_AND_DURING_EDIT"
+    
+    error_handling:
+      internal_only: ["detailed_errors", "stack_traces"]
+      external_allowed: ["generic_messages"]
+      validation_timing: "BEFORE_RESPONSE"
+    
+    input_processing:
+      required_validation: true
+      sanitization_required: true
+      validation_timing: "BEFORE_PROCESSING"
+
+    banned_libraries:
+      required_check: true
+      check_timing: "BEFORE_ANY_LIBRARY_USAGE"
+      source_file: "${banned_list_path}"
+      no_exceptions: true
+      validation_timing: "BEFORE_AND_DURING_ACTION"
+```
+
+### 7.2 Command Execution
+- **REQUIRED:** ALL commands MUST append `| cat` to ensure non-interactive execution
+- **BLOCKED:** Commands without `| cat` are not allowed
+- **REASON:** Prevents interactive prompts and ensures consistent behavior
+- **APPLIES TO:** ALL terminal commands without exception
+- **EXAMPLES:**
+  ```bash
+  # CORRECT:
+  pytest test_file.py -v | cat
+  git status | cat
+  ls -la | cat
+  
+  # INCORRECT:
+  pytest test_file.py -v
+  git status
+  ls -la
+  ```
+- **EXCEPTIONS:** None - all commands must use `| cat`
+- **VALIDATION:** Must be checked before any command execution
+- **ENFORCEMENT:** Strict - commands without `| cat` should be blocked 

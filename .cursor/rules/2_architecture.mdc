@@ -1,0 +1,183 @@
+---
+description: Architecture rules define core system structure and patterns
+globs: ["**/*"]
+---
+# Attributes
+role: Architecture Expert
+extends: [1_role_declaration.mdc](mdc:.cursor/rules/1_role_declaration.mdc)
+priority: 2
+
+# Architecture Standards
+Version: 1.0.1
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "component_design"
+      triggers:
+        - "creating new component"
+        - "defining service"
+        - "implementing module"
+        - "structuring system"
+      validation:
+        - check: "Am I designing a system component?"
+          if_true:
+            blocked_thoughts:
+              - "Can combine multiple responsibilities"
+              - "Tight coupling is more efficient"
+              - "Can handle edge cases later"
+              - "Dependencies aren't important yet"
+            required_thoughts:
+              - "Single Responsibility Principle"
+              - "Must be loosely coupled"
+              - "Consider all edge cases"
+              - "Define clear dependencies"
+            immediate_actions:
+              - "STOP and verify component boundaries"
+              - "Check responsibility scope"
+              - "Review dependencies"
+              - "Validate interfaces"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "mixed_responsibilities"
+              matches: ["class .*Service.*Repository", "class .*Controller.*Service"]
+              reason: "Components must have single responsibility"
+            - pattern: "tight_coupling"
+              matches: ["new .*\\(", "\\._[a-z]"]
+              reason: "Use dependency injection and interfaces"
+          required:
+            - pattern: "clean_interfaces"
+              description: "Clear component interfaces"
+              example: |
+                class DataService:
+                    """Single responsibility service."""
+                    def __init__(self, repository: Repository):
+                        self.repository = repository
+
+    - phase: "error_handling"
+      triggers:
+        - "handling errors"
+        - "implementing recovery"
+        - "defining boundaries"
+        - "managing state"
+      validation:
+        - check: "Am I handling system errors?"
+          if_true:
+            blocked_thoughts:
+              - "Can handle errors locally"
+              - "Generic errors are fine"
+              - "Recovery isn't critical"
+              - "State can be undefined"
+            required_thoughts:
+              - "Must define error boundaries"
+              - "Use specific error types"
+              - "Implement proper recovery"
+              - "Maintain consistent state"
+            immediate_actions:
+              - "STOP and check error handling"
+              - "Review error types"
+              - "Verify recovery paths"
+              - "Validate state management"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "generic_errors"
+              matches: ["except:", "except Exception:"]
+              reason: "Use specific error types"
+            - pattern: "silent_failures"
+              matches: ["pass", "continue"]
+              reason: "Must handle errors explicitly"
+          required:
+            - pattern: "proper_errors"
+              description: "Specific error handling"
+              example: |
+                try:
+                    result = operation()
+                except OperationError as e:
+                    handle_operation_failure(e)
+                    raise ServiceError(f"Operation failed: {e}")
+
+    - phase: "dependency_management"
+      triggers:
+        - "adding dependency"
+        - "importing module"
+        - "connecting services"
+        - "managing configuration"
+      validation:
+        - check: "Am I managing system dependencies?"
+          if_true:
+            blocked_thoughts:
+              - "Can import directly"
+              - "Circular deps are manageable"
+              - "Hard-coding is simpler"
+              - "Config can be inline"
+            required_thoughts:
+              - "Use dependency injection"
+              - "Prevent circular dependencies"
+              - "Externalize configuration"
+              - "Define clear interfaces"
+            immediate_actions:
+              - "STOP and check dependency flow"
+              - "Verify dependency graph"
+              - "Check configuration"
+              - "Review interfaces"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "circular_imports"
+              matches: ["from \\. import", "import \\."]
+              reason: "Prevent circular dependencies"
+            - pattern: "hardcoded_config"
+              matches: ["config = {", "settings = {"]
+              reason: "Use external configuration"
+          required:
+            - pattern: "clean_dependencies"
+              description: "Proper dependency management"
+              example: |
+                class Service:
+                    def __init__(self, config: Config, client: Client):
+                        self.config = config
+                        self.client = client
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check component responsibilities"
+      - "Verify dependency structure"
+      - "Confirm error boundaries"
+      - "Review system interfaces"
+    
+    during_action:
+      - "Monitor component coupling"
+      - "Check error handling"
+      - "Verify state management"
+      - "Validate dependency flow"
+    
+    post_action:
+      - "Verify single responsibility"
+      - "Check error recovery"
+      - "Confirm clean dependencies"
+      - "Validate system boundaries"
+
+  # Context Boundaries
+  context_boundaries:
+    component_design:
+      required_elements: ["single_responsibility", "loose_coupling"]
+      validation_timing: "BEFORE_IMPLEMENTATION"
+    
+    error_handling:
+      required_elements: ["specific_errors", "recovery_paths"]
+      allow_generic: false
+      validation_timing: "CONTINUOUS"
+    
+    dependency_management:
+      required_elements: ["clean_imports", "external_config"]
+      allow_circular: false
+      validation_timing: "BEFORE_AND_DURING_EDIT"

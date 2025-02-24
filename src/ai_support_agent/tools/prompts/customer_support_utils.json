@@ -1,0 +1,35 @@
+{
+    "extract_model_numbers": {
+        "name": "Model Number Extraction",
+        "description": "Extracts product model numbers from text",
+        "prompt_template": "Extract all product model numbers from this text. Return only the model numbers, separated by spaces:\n\n{text}",
+        "llm_config": {
+            "model": "gpt-4-turbo-preview",
+            "api_key": "",
+            "temperature": 0.1,
+            "max_tokens": 100
+        }
+    },
+    "determine_focus_areas": {
+        "name": "Focus Area Analysis",
+        "description": "Determines which areas of specifications to focus on",
+        "prompt_template": "Given this query:\n{query}\n\nAnd this specification structure:\n{specs}\n\nIdentify the most relevant sections, categories, and specifications to focus on. Consider:\n- Explicitly mentioned areas\n- Implied areas of interest\n- Technical context\n- Query intent",
+        "llm_config": {
+            "model": "gpt-4-turbo-preview",
+            "api_key": "",
+            "temperature": 0.3,
+            "max_tokens": 500
+        }
+    },
+    "get_display_preferences": {
+        "name": "Display Preferences",
+        "description": "Determines optimal display settings for product information",
+        "prompt_template": "Given this query:\n{query}\n\nAnd these focus areas:\n{areas}\n\nDetermine the optimal way to display product information. Consider:\n- Which sections to show\n- Categories to highlight\n- Comparison mode (full vs differences)\n- Whether to show only differences\n- Level of detail needed",
+        "llm_config": {
+            "model": "gpt-4-turbo-preview",
+            "api_key": "",
+            "temperature": 0.3,
+            "max_tokens": 300
+        }
+    }
+} 

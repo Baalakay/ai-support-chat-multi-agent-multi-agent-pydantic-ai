@@ -1,0 +1,247 @@
+---
+description: Pydantic v2.10 best practices and patterns
+globs: ["**/*.py"]
+---
+# Attributes
+role: Pydantic Expert
+extends: [3_python.mdc](mdc:.cursor/rules/3_python.mdc)
+priority: 4
+
+# Pydantic Best Practices
+Version: 2.10.0
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "confidence_check"
+      triggers:
+        - "implementing feature"
+        - "writing pydantic code"
+        - "making changes"
+        - "defining models"
+        - "adding validation"
+        - "handling serialization"
+        - "configuring models"
+      validation:
+        - check: "Am I confident about this Pydantic code?"
+          if_true:
+            blocked_thoughts:
+              - "Can figure it out"
+              - "Documentation optional"
+              - "Trial and error works"
+              - "Basic model is enough"
+            required_thoughts:
+              - "Must be >= 95% confident"
+              - "Must check documentation"
+              - "Must understand patterns"
+              - "Must verify model patterns"
+            immediate_actions:
+              - "STOP and assess confidence"
+              - "Use @ to load relevant docs"
+              - "Review examples"
+              - "Verify understanding"
+              - "Check migration guide if needed"
+      enforcement:
+        patterns:
+          required:
+            - pattern: "confidence_check"
+              description: "Confidence validation"
+              confidence_threshold: 0.95
+              documentation_refs:
+                - @Pydantic  # Load Pydantic docs
+
+    - phase: "model_definition"
+      triggers:
+        - "creating model class"
+        - "defining data model"
+        - "implementing BaseModel"
+        - "adding model fields"
+      validation:
+        - check: "Am I defining a Pydantic model?"
+          if_true:
+            blocked_thoughts:
+              - "Dataclass is simpler"
+              - "Regular class is fine"
+              - "Config isn't needed"
+              - "Field validation optional"
+            required_thoughts:
+              - "Must inherit from BaseModel"
+              - "Must use ConfigDict"
+              - "Must define field types"
+              - "Must consider validation"
+            immediate_actions:
+              - "STOP and verify model structure"
+              - "Check inheritance"
+              - "Verify configuration"
+              - "Review field definitions"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "dataclass_usage"
+              matches: ["@dataclass", "from dataclasses import"]
+              reason: "Use Pydantic BaseModel instead of dataclass"
+            - pattern: "missing_types"
+              matches: [": Any", "= Field(...)"]
+              reason: "All fields must have explicit types"
+          required:
+            - pattern: "proper_model"
+              description: "Correct model definition"
+              example: |
+                class MyModel(BaseModel):
+                    """Model description."""
+                    model_config = ConfigDict(
+                        frozen=True,
+                        extra="forbid",
+                        validate_assignment=True
+                    )
+                    field1: str = Field(..., description="Field description")
+                    field2: int = Field(default=0, ge=0)
+
+    - phase: "validation_implementation"
+      triggers:
+        - "adding validation"
+        - "field constraints"
+        - "custom validators"
+        - "model validation"
+      validation:
+        - check: "Am I implementing validation?"
+          if_true:
+            blocked_thoughts:
+              - "Runtime checks are enough"
+              - "Basic types sufficient"
+              - "Can validate later"
+              - "Simple fields don't need validation"
+            required_thoughts:
+              - "Must define constraints"
+              - "Must use Field with validation"
+              - "Consider custom validators"
+              - "Think about error messages"
+            immediate_actions:
+              - "STOP and check validation needs"
+              - "Review field constraints"
+              - "Verify error handling"
+              - "Check validator coverage"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "runtime_validation"
+              matches: ["if not isinstance", "if type("]
+              reason: "Use Pydantic field validation"
+            - pattern: "manual_validation"
+              matches: ["raise ValueError", "assert "]
+              reason: "Use validator decorators"
+          required:
+            - pattern: "field_validation"
+              description: "Proper field validation"
+              example: |
+                age: int = Field(
+                    gt=0,
+                    lt=150,
+                    description="Age in years"
+                )
+                
+                @field_validator("email")
+                def validate_email(cls, v: str) -> str:
+                    if "@" not in v:
+                        raise ValueError("Invalid email")
+                    return v.lower()
+
+    - phase: "serialization_handling"
+      triggers:
+        - "model serialization"
+        - "JSON conversion"
+        - "data export"
+        - "model dumping"
+      validation:
+        - check: "Am I handling model data conversion?"
+          if_true:
+            blocked_thoughts:
+              - "Manual dict conversion"
+              - "JSON dumps is fine"
+              - "Custom serialization needed"
+              - "Can handle special cases"
+            required_thoughts:
+              - "Use model_dump/model_dump_json"
+              - "Consider exclude/include"
+              - "Handle nested models"
+              - "Think about types"
+            immediate_actions:
+              - "STOP and check serialization"
+              - "Verify method usage"
+              - "Check nested handling"
+              - "Review type conversion"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "manual_conversion"
+              matches: ["dict\\(", "json\\.dumps"]
+              reason: "Use Pydantic's built-in serialization"
+            - pattern: "dict_access"
+              matches: ["\\.__dict__", "\\.dict\\("]
+              reason: "Use model_dump() method"
+          required:
+            - pattern: "proper_serialization"
+              description: "Correct serialization usage"
+              example: |
+                data = model.model_dump(
+                    exclude_unset=True,
+                    exclude={"sensitive_field"},
+                    mode="json"
+                )
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check model structure requirements"
+      - "Verify validation needs"
+      - "Confirm configuration requirements"
+      - "Review existing patterns"
+      - "Assess confidence level"
+      - "Load relevant documentation"
+    
+    during_action:
+      - "Monitor implementation patterns"
+      - "Check validation usage"
+      - "Verify model structure"
+      - "Validate type hints"
+      - "Verify confidence maintained"
+    
+    post_action:
+      - "Verify model configuration"
+      - "Check validation completeness"
+      - "Confirm type coverage"
+      - "Validate error handling"
+      - "Review confidence assessment"
+
+  # Context Boundaries
+  context_boundaries:
+    model_definition:
+      required_elements: ["base_class", "config", "fields"]
+      validation_timing: "BEFORE_IMPLEMENTATION"
+    
+    validation_implementation:
+      required_elements: ["validators", "types", "constraints"]
+      validation_timing: "DURING_IMPLEMENTATION"
+    
+    serialization_implementation:
+      required_elements: ["serializers", "aliases", "excludes"]
+      validation_timing: "DURING_IMPLEMENTATION"
+      
+    confidence_assessment:
+      confidence_threshold: 0.95
+      documentation_required: true
+      doc_loading_method: "cursor_composer"  # Use Cursor's '@' reference system
+      doc_refs:
+        - @Pydantic  # Pydantic documentation
+      validation_timing: "BEFORE_IMPLEMENTATION"
+      context_specific_docs:
+        model_definition: "@Pydantic"
+        validation: "@Pydantic"
+        serialization: "@Pydantic"
+``` 

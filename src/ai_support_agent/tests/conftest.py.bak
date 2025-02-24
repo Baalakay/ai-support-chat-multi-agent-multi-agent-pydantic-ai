@@ -1,0 +1,170 @@
+"""Test configuration and fixtures."""
+
+import pytest
+import warnings
+import logfire
+from pathlib import Path
+import shutil
+import tempfile
+from typing import Generator
+
+from pydantic_ai import RunContext
+from pydantic_ai.usage import Usage
+
+from ..services.storage_service import SupabaseStorageService
+from ..types.pdf import PDFContent, PDFPage, PDFSection, PDFCategory, PDFSpecification
+from ..types.storage import DataNotFoundError
+from ..config.config import get_settings
+from ..services.db import get_db_client
+from ..services.db.tools import create_tables, drop_tables
+from ..config.logging import configure_logging
+
+# Configure logfire for testing
+configure_logging(testing=True)
+
+# Disable all warnings
+warnings.simplefilter("ignore")
+
+# Log test configuration
+settings = get_settings()
+logfire.log('info', 'Test configuration initialized. Environment: {env}, warnings: {warn}', {
+    'env': settings.environment,
+    'warn': 'disabled'
+})
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_logging():
+    """Configure logging for all tests."""
+    configure_logging(testing=True)
+    logfire.log('info', 'Test logging configured. Testing mode: {testing}, environment: {env}', {
+        'testing': True,
+        'env': 'test'
+    })
+    yield
+    # Cleanup after all tests
+    logfire.log('info', 'Test logging cleanup completed. Status: {status}', {
+        'status': 'completed'
+    })
+
+
+@pytest.fixture
+def ctx() -> RunContext:
+    """Create run context for testing."""
+    context = RunContext(
+        deps=None,  # No dependencies needed for storage tests
+        model="test-model",
+        usage=Usage(
+            requests=0,
+            request_tokens=None,
+            response_tokens=None,
+            total_tokens=None,
+            details=None
+        ),
+        prompt="Test prompt"
+    )
+    
+    logfire.log('info', 'Test context created. Model: {model}, has_deps: {deps}', {
+        'model': context.model,
+        'deps': context.deps is not None
+    })
+    
+    return context
+
+
+@pytest.fixture(autouse=True)
+async def cleanup_test_data(ctx: RunContext, storage_service: SupabaseStorageService) -> Generator[None, None, None]:
+    """Clean up test data before each test.
+    
+    This fixture runs automatically before each test to ensure a clean state.
+    """
+    logfire.log('info', 'Test cleanup started. Operation: {op}, phase: {phase}', {
+        'op': 'cleanup',
+        'phase': 'start'
+    })
+    
+    yield
+    
+    # Clean up after test
+    test_models = ["580R", "980F"]
+    for model in test_models:
+        try:
+            await storage_service.delete_pdf_data(ctx, model)
+            logfire.log('info', 'Test data cleaned. Model: {model}, operation: {op}', {
+                'model': model,
+                'op': 'delete'
+            })
+        except DataNotFoundError:
+            # It's okay if the data doesn't exist
+            logfire.log('info', 'Test data not found. Model: {model}, operation: {op}', {
+                'model': model,
+                'op': 'delete'
+            })
+            pass
+    
+    logfire.log('info', 'Test cleanup completed. Operation: {op}, phase: {phase}', {
+        'op': 'cleanup',
+        'phase': 'end'
+    })
+
+
+@pytest.fixture
+def storage_service() -> SupabaseStorageService:
+    """Create storage service for testing."""
+    settings = get_settings()
+    
+    if not settings.supabase_url or not settings.supabase_key:
+        logfire.log('error', 'Missing Supabase credentials. Error: {error}', {
+            'error': 'SUPABASE_URL and SUPABASE_KEY must be set in .env file'
+        })
+        raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in .env file")
+    
+    service = SupabaseStorageService(
+        supabase_url=settings.supabase_url,
+        supabase_key=settings.supabase_key
+    )
+    
+    logfire.log('info', 'Test storage service created. Service: {service}, url_configured: {url}, key_configured: {key}', {
+        'service': 'supabase',
+        'url': bool(settings.supabase_url),
+        'key': bool(settings.supabase_key)
+    })
+    
+    return service
+
+
+@pytest.fixture
+def sample_pdf_content() -> PDFContent:
+    """Create sample PDFContent for testing."""
+    content = PDFContent(
+        raw_text="Sample text",
+        model_number="580R",
+        pages=[
+            PDFPage(
+                number=1,
+                text="Sample page",
+                tables=[]
+            )
+        ],
+        sections={
+            "Features_And_Advantages": PDFSection(
+                categories={
+                    "features": PDFCategory(
+                        subcategories={
+                            "": PDFSpecification(
+                                value="Sample feature"
+                            )
+                        }
+                    )
+                }
+            )
+        }
+    )
+    
+    logfire.log('info', 'Sample content created. Model: {model}, size: {size}, sections: {sections}', {
+        'model': content.model_number,
+        'size': len(content.raw_text),
+        'sections': list(content.sections.keys())
+    })
+    
+    return content 

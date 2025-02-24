@@ -1,0 +1,12 @@
+{
+    "name": "Technical Findings Prompt",
+    "description": "Generates detailed technical findings and recommendations",
+    "prompt_template": "As a technical expert, analyze these product specifications and generate detailed findings.\n\nProducts: {models}\n\nSpecifications:\n{specs}\n\nProvide:\n1. Technical comparison\n2. Performance analysis\n3. Specific recommendations\n4. Use case optimization\n\nFormat the response with clear sections and actionable insights.",
+    "llm_config": {
+        "model": "gpt-4",
+        "api_key": "",
+        "temperature": 0.5,
+        "max_tokens": 1500
+    },
+    "version": "1.0.0"
+} 

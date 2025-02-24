@@ -1,0 +1,237 @@
+---
+description: Enforces Logfire logging standards and best practices with Pydantic types
+globs: ["**/*.py"]
+---
+---
+description: Enforces Logfire logging standards and best practices
+globs: ["**/*.py"]
+---
+---
+description: Enforces Logfire logging sbest practices
+globs: ["**/*.py"]
+---
+# Attributes
+role: Logging Expert
+extends: @3_python.mdc, [4_pydantic.mdc](mdc:.cursor/rules/4_pydantic.mdc), [5_pydantic-ai.mdc](mdc:.cursor/rules/5_pydantic-ai.mdc)
+priority: 6
+
+# Logging Standards
+Version: 1.0.1
+
+# Core Requirements
+1. EVERY application MUST use Logfire for logging:
+```python
+import logfire  # CORRECT - Import the entire module
+
+# Configure via our centralized configuration
+from ..config.logging import configure_logging
+configure_logging()  # Must be called to set up logging with proper credentials and options
+```
+
+2. NEVER use Python's standard logging:
+```python
+# BLOCKED - Do not use standard logging
+from logging import basicConfig, getLogger
+```
+
+3. ALWAYS use structured logging with proper parameters:
+```python
+# Correct usage - requires level, msg_template, and optional attributes
+logfire.log('info', 'Operation completed. Status: {status}', {
+    'status': 'success',
+    'details': 'additional context'
+})
+
+# BLOCKED - Do not import log directly
+from logfire import log
+
+# BLOCKED - Do not use string-only logging without template
+logfire.log('info', 'operation completed')
+
+# BLOCKED - Do not pass dictionary as first argument
+logfire.log({
+    'message': 'operation completed',
+    'status': 'success'
+})
+```
+
+4. When confidence < 95%, MUST load documentation using Cursor composer:
+```
+# When you need to reference docs, use Cursor's '@' reference system:
+@Logfire Full Docs  # For general Logfire documentation
+
+Note: These must be used exactly as shown to properly load the indexed 
+documentation into Cursor's context. Do not add quotes or modify the format.
+```
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "logging_setup"
+      triggers:
+        - "initializing logging"
+        - "setting up application"
+        - "configuring logging"
+      validation:
+        - check: "Am I setting up logging?"
+          if_true:
+            blocked_thoughts:
+              - "Can use Python logging"
+              - "Don't need structured logs"
+              - "Can hardcode credentials"
+              - "Configuration optional"
+            required_thoughts:
+              - "Must use Logfire directly"
+              - "Must use structured logging"
+              - "Must use credential file"
+              - "Must call configure()"
+            immediate_actions:
+              - "STOP and check logging setup"
+              - "Verify credentials file"
+              - "Check configuration"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "standard_logging"
+              matches: ["from logging import", "import logging"]
+              reason: "Use Logfire directly instead of standard logging"
+            - pattern: "hardcoded_credentials"
+              matches: ["logfire.configure\\([\"']"]
+              reason: "Use .logfire/logfire_credentials.json instead of hardcoded values"
+            - pattern: "alternative_logging"
+              matches: [
+                "logfire\\.getLogger",
+                "logger\\s*=",
+                "log\\s*=\\s*logfire\\.getLogger",
+                "logging\\.",
+                "\\.getLogger\\("
+              ]
+              reason: "Must use 'from logfire import log' directly"
+            - pattern: "logger_variable"
+              matches: [
+                "logger\\.",
+                "\\blogger\\b"
+              ]
+              reason: "Must use 'log' from logfire, not a logger instance"
+          required:
+            - pattern: "proper_setup"
+              description: "Correct Logfire setup"
+              example: |
+                import logfire
+                from logfire import log
+                
+                logfire.configure()  # Reads from .logfire/logfire_credentials.json
+
+    - phase: "log_writing"
+      triggers:
+        - "adding log statement"
+        - "logging event"
+        - "recording info"
+      validation:
+        - check: "Am I writing a log?"
+          if_true:
+            blocked_thoughts:
+              - "String message is enough"
+              - "Context can be added later"
+              - "Simple print will do"
+            required_thoughts:
+              - "Must use structured logging"
+              - "Must include context"
+              - "Must use proper level"
+              - "Must be descriptive"
+            immediate_actions:
+              - "STOP and check log format"
+              - "Verify context included"
+              - "Check log level"
+              - "Review descriptiveness"
+      enforcement:
+        patterns:
+          blocked:
+            - pattern: "string_only_log"
+              matches: ["log\\.(info|error|warning)\\([\"'][^{]*[\"']\\)"]
+              reason: "Must use structured logging with context"
+            - pattern: "print_logging"
+              matches: ["print\\("]
+              reason: "Use Logfire logging instead of print"
+          required:
+            - pattern: "structured_log"
+              description: "Proper structured logging"
+              example: |
+                log.info("user_action_completed", {
+                    "user_id": user.id,
+                    "action": "login",
+                    "status": "success",
+                    "duration_ms": 150
+                })
+
+    - phase: "confidence_check"
+      triggers:
+        - "implementing feature"
+        - "writing code"
+        - "making changes"
+      validation:
+        - check: "Am I confident about this code?"
+          if_true:
+            blocked_thoughts:
+              - "Can figure it out"
+              - "Documentation optional"
+              - "Trial and error works"
+            required_thoughts:
+              - "Must be >= 95% confident"
+              - "Must check documentation"
+              - "Must understand patterns"
+            immediate_actions:
+              - "STOP and assess confidence"
+              - "Use @ to load relevant docs"
+              - "Review examples"
+              - "Verify understanding"
+      enforcement:
+        patterns:
+          required:
+            - pattern: "confidence_check"
+              description: "Confidence validation"
+              confidence_threshold: 0.95
+              documentation_refs:
+                - @Logfire Full Docs  # Load general Logfire docs
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Check logging setup"
+      - "Verify credentials"
+      - "Confirm configuration"
+    
+    during_action:
+      - "Monitor log structure"
+      - "Check context inclusion"
+      - "Verify log levels"
+      - "Validate confidence"
+    
+    post_action:
+      - "Verify all logs structured"
+      - "Confirm credentials"
+      - "Review confidence"
+
+  # Context Boundaries
+  context_boundaries:
+    logging_setup:
+      required_elements: ["configure", "credentials"]
+      validation_timing: "BEFORE_ANY_LOGGING"
+    
+    log_writing:
+      required_elements: ["structured", "context", "level"]
+      validation_timing: "DURING_DEVELOPMENT"
+    
+    confidence_assessment:
+      confidence_threshold: 0.95
+      documentation_required: true
+      doc_loading_method: "cursor_composer"  # Use Cursor's '@' reference system
+      doc_refs:
+        - @Logfire Full Docs  # General Logfire documentation
+      validation_timing: "BEFORE_IMPLEMENTATION"

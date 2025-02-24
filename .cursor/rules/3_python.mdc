@@ -1,0 +1,695 @@
+---
+description: Core Python best practices and patterns following PEP8gs which should
+globs: ["**/*.py"]
+---
+# Attributes
+role: Python Expert
+extends: [2_architecture.mdc](mdc:.cursor/rules/2_architecture.mdc)
+priority: 3
+
+# Decision Flows and Validation Points
+```yaml
+enforcement:
+  level: "STRICT"
+  validation: "REQUIRED"
+  override_allowed: false
+  
+  # Core Decision Flows
+  decision_flows:
+    - phase: "initial_analysis"
+      validation:
+        - check: "Is this a new task or request?"
+          required_actions:
+            - "STOP and check all applicable .cursor/rules/*.mdc files"
+            - "Verify globs match the files being modified"
+            - "Load and review ALL matching rules before proceeding"
+    
+    - phase: "package_management"
+      triggers:
+        - "installing dependencies"
+        - "adding packages"
+        - "updating requirements"
+        - "setting up environment"
+        - "managing Python packages"
+      validation:
+        - check: "Is this related to package management?"
+          if_true:
+            blocked_thoughts:
+              - "pip is commonly used"
+              - "pip install is quick"
+              - "requirements.txt is standard"
+            required_thoughts:
+              - "Rye is the ONLY allowed package manager"
+              - "pyproject.toml is required"
+              - "Must check package management rules first"
+            immediate_actions:
+              - "STOP and verify package management rules"
+              - "Confirm Rye is being used"
+              - "Verify pyproject.toml structure"
+      enforcement:
+        tools:
+          allowed: ["rye"]
+          blocked: ["pip", "poetry", "pipenv", "setup.py", "requirements.txt"]
+        files:
+          required: ["pyproject.toml"]
+          blocked: ["requirements.txt", "setup.py"]
+        commands:
+          allowed:
+            - "rye sync"
+            - "rye add"
+            - "rye remove"
+            - "rye run"
+          blocked:
+            - pattern: "pip .*"
+              reason: "Use rye for all package management"
+    
+    - phase: "command_execution"
+      triggers:
+        - "running commands"
+        - "executing tests"
+        - "using git"
+        - "viewing logs"
+      validation:
+        - check: "Will this command require user interaction?"
+          if_true:
+            blocked_thoughts:
+              - "Interactive output is fine"
+              - "User can handle prompts"
+            required_thoughts:
+              - "Must prevent interactive prompts"
+              - "Always use | cat for potentially interactive commands"
+            immediate_actions:
+              - "STOP and check if command needs | cat"
+              - "Verify command won't block for input"
+      enforcement:
+        commands:
+          must_append: "| cat"
+          for_commands:
+            - "git log"
+            - "less"
+            - "more"
+            - "head"
+            - "tail"
+            - "pytest"
+            
+    - phase: "code_modification"
+      triggers:
+        - "editing files"
+        - "updating code"
+        - "making changes"
+      validation:
+        - check: "Am I about to modify code?"
+          if_true:
+            required_thoughts:
+              - "Must make minimal, focused edits"
+              - "Only change what's needed for the task"
+              - "Preserve unrelated code"
+            immediate_actions:
+              - "Identify specific lines needing changes"
+              - "Plan minimal edit path"
+              - "Verify unrelated code won't be affected"
+      enforcement:
+        edits:
+          blocked_patterns:
+            - pattern: "complete section replacement"
+              reason: "Make minimal, focused changes"
+            - pattern: "code block duplication"
+              reason: "Don't duplicate for small changes"
+          required_patterns:
+            - pattern: "inline modification"
+              description: "Make specific changes inline"
+            - pattern: "// ... existing code ..."
+              description: "Indicate unchanged sections"
+
+  # Validation Points
+  validation_points:
+    pre_action:
+      - "Load and verify all applicable rules"
+      - "Check decision flow phases"
+      - "Verify tool and command restrictions"
+      - "Confirm edit boundaries"
+    
+    during_action:
+      - "Monitor for blocked patterns"
+      - "Enforce required patterns"
+      - "Check command modifications"
+      - "Validate edit scope"
+    
+    post_action:
+      - "Verify changes meet requirements"
+      - "Confirm no unrelated modifications"
+      - "Check for pattern compliance"
+
+  # Context Boundaries
+  context_boundaries:
+    package_management:
+      allowed_tools: ["rye"]
+      blocked_tools: ["pip", "poetry", "pipenv"]
+      validation_timing: "BEFORE_SUGGESTION"
+    
+    command_execution:
+      interactive_prevention: true
+      required_suffix: "| cat"
+      validation_timing: "BEFORE_EXECUTION"
+    
+    code_modification:
+      edit_scope: "minimal"
+      preserve_unrelated: true
+      validation_timing: "BEFORE_AND_DURING_EDIT"
+
+  # Enforcement Patterns
+  patterns:
+    blocked:
+      - pattern: "version_pinning"
+        matches: [
+          ">=\\d+\\.\\d+\\.\\d+,<",  # Blocks version range caps
+          "==\\d+\\.\\d+\\.\\d+",    # Blocks exact version pinning
+          "<=\\d+\\.\\d+\\.\\d+"     # Blocks version upper bounds
+        ]
+        reason: "Use latest versions (>=X.Y.Z) unless there is a specific documented reason not to"
+        exceptions:
+          - "Specific version required by another dependency"
+          - "Known breaking changes in newer versions"
+          - "Security vulnerability in latest version"
+        validation: |
+          1. MUST use `>=` for version constraints by default
+          2. MUST document any version caps with specific reason
+          3. MUST review version constraints in dependencies monthly
+          4. MUST NOT use exact version pinning without documented reason
+    required:
+      - pattern: "latest_versions"
+        description: "Use latest versions by default"
+        example: |
+          dependencies = [
+              "logfire>=0.8.0",      # Correct - allows latest
+              "fastapi>=0.109.0",     # Correct - allows latest
+              "supabase>=2.13.0",     # Correct - allows latest
+          ]
+```
+
+# 1. Python Best Practices (@PEP8)
+Version: 1.0.1
+
+## Documentation References
+- Primary: @PEP8 (https://peps.python.org/pep-0008/)
+- Version: Latest
+- Last Checked: 2024-01-23
+- Required Sections:
+  - Code Layout
+  - Naming Conventions
+  - Programming Recommendations
+  - Code Modification Rules
+  - Development Tools & Practices
+
+## Code Style & Naming
+
+- **Indentation:**  
+  Use **4 spaces** per indentation level.
+  @PEP8 Reference: Code Layout > Indentation
+
+- **Naming Conventions:**  
+  - **Variables and functions:** Use `snake_case`
+  - **Classes:** Use `PascalCase`
+  - **Constants:** Use `UPPER_CASE_WITH_UNDERSCORES`
+  @PEP8 Reference: Naming Conventions
+  
+- **Line Length & Spacing:**  
+  - Limit lines to **79 characters** (or follow project-specific guidelines)  
+  - Use appropriate whitespace around operators and after commas for readability
+  @PEP8 Reference: Code Layout > Maximum Line Length
+
+# 2. Code Modification Rules
+## Minimal Edit Principle
+- **REQUIRED:** Make minimal, focused edits that affect only the specific code that needs to change
+  ```yaml
+  enforcement:
+    level: "STRICT"
+    validation: "REQUIRED"
+    override_allowed: false
+    blocked_patterns:
+      - pattern: "complete section replacement"
+        reason: "Do not replace entire sections when only small changes are needed"
+      - pattern: "code block duplication"
+        reason: "Do not duplicate code blocks to make small changes"
+    required_patterns:
+      - pattern: "inline modification"
+        validation: "REQUIRED"
+        description: "Make specific changes inline within existing code"
+    rules:
+      - "NEVER remove or replace code that is not directly related to the current task"
+      - "NEVER copy entire code blocks to make small changes"
+      - "ALWAYS make minimal, specific edits inline"
+      - "ALWAYS preserve surrounding code context"
+      - "ALWAYS use '// ... existing code ...' to indicate unchanged sections"
+      - "NEVER duplicate sections that contain unchanged code"
+    validation:
+      pre_edit:
+        - Identify specific lines that need changes
+        - Verify unrelated code will not be affected
+        - Plan minimal edit path
+      during_edit:
+        - Make only necessary changes
+        - Preserve all unrelated code
+        - Use inline edits where possible
+      post_edit:
+        - Verify only intended changes were made
+        - Confirm no unrelated code was modified
+        - Check for accidental duplications
+    file_patterns:
+      - "**/*"
+  ```
+
+# 3. Documentation & Readability
+
+- **Docstrings:**  
+  - Use triple-quoted docstrings for modules, classes, and functions.
+  - Follow [PEP 257](mdc:https:/www.python.org/dev/peps/pep-0257) conventions.
+  
+- **Comments:**  
+  - Include clear, concise comments to explain non-obvious code sections.
+
+- **Comprehensions:**  
+  - Leverage list, dict, and set comprehensions to write concise and efficient iterations.
+
+- **Type Hints:**  
+  - Annotate function arguments and return types using Python's type hints.
+  - **Pydantic Enforcement:** Use **Pydantic v2.10** for all data models and settings. Wherever native dataclasses might be used, prefer Pydantic's `BaseModel` to benefit from enhanced runtime validation and clarity.
+  - Use static type checkers (e.g., `mypy`) to enforce type correctness.
+
+# 4. Exceptions & Resource Management
+
+- **Error Handling:**  
+  - Use explicit exception handling rather than bare `except:` clauses.
+  - Define custom exceptions where it adds clarity to error conditions.
+
+- **Resource Management:**  
+  - Utilize context managers (i.e., the `with` statement) to manage resources such as file I/O and network connections.
+
+# 5. Modular Design & Code Organization
+
+- **Modularity:**  
+  - Structure your code into logical modules and packages.
+  - Each module should encapsulate a single, well-defined responsibility.
+
+- **Avoid Globals:**  
+  - Limit the use of global variables to keep the codebase predictable and testable.
+
+- **Single Responsibility Principle:**  
+  - Ensure that each function or class has one clear responsibility.
+  
+- **Decoupling:**  
+  - Write modular, decoupled code to facilitate maintenance and unit testing.
+
+# 6. Modern Python Features
+
+- **Pattern Matching:**  
+  - Use structural pattern matching (introduced in Python 3.10+) where applicable.
+
+- **Async Programming:**  
+  - Employ `async`/`await` for asynchronous I/O operations to improve performance.
+
+- **F-Strings:**  
+  - Use f-strings for readable and efficient string formatting.
+
+- **Pydantic Models:**  
+  - **Preferred Data Modeling:** Replace native dataclasses with **Pydantic v2.10** models by subclassing `pydantic.BaseModel`.  
+  - **Enhanced Validation:** Leverage Pydantic's type validation and serialization features.  
+  - **Modern Syntax:** Utilize the new field validation decorators (e.g., `@field_validator`) and the `model_config` attribute for configuring model behavior instead of the traditional inner `Config` class.
+  - **Consistency:** Apply these practices across the codebase to ensure robust type checking, clear error messaging, and improved runtime performance.
+
+# 7. Development Tools & Practices
+
+- **Package Management:**  
+  - Use **Rye** for package management.
+
+- **Project Configuration:**  
+  - Configure projects using a modern `pyproject.toml` file.
+
+- **Testing:**  
+  - Write unit tests and integration tests.
+  - Consider adopting test-driven development (TDD) practices.
+
+- **Version Control:**  
+  - Follow best practices for version control (clear commit messages, feature branching, code reviews).
+
+- **CI/CD:**  
+  - Set up continuous integration and deployment pipelines to automate testing and releases.
+
+### 7.1 Package Management
+- **REQUIRED:** Use Rye for all Python package management
+  ```yaml
+  enforcement:
+    level: "STRICT"
+    validation: "REQUIRED"
+    override_allowed: false
+    blocked_patterns:
+      - pattern: "pip install"
+        reason: "Use rye for package management"
+      - pattern: "requirements.txt"
+        reason: "Use pyproject.toml with rye"
+      - pattern: "setup.py"
+        reason: "Use pyproject.toml with rye"
+    required_patterns:
+      - pattern: |
+          [tool.rye]
+          managed = true
+          dev-dependencies = [...]
+          
+          [tool.rye.scripts]
+          test = "pytest tests/"
+          lint = "ruff check ."
+          format = "ruff format ."
+        validation: "STRICT"
+    file_patterns:
+      - "**/*.py"
+      - "**/*.toml"
+      - "**/*.md"
+      - "**/*.sh"
+  ```
+
+- **Project Structure:**
+  - MUST use `pyproject.toml` for project configuration
+  - MUST NOT use `requirements.txt` or `setup.py`
+  - MUST include `[tool.rye]` section in `pyproject.toml`
+  - MUST use rye for dependency management:
+    - `rye sync` for installing dependencies
+    - `rye add` for adding dependencies
+    - `rye remove` for removing dependencies
+    - `rye run` for running scripts
+
+- **Version Management:**
+  - MUST specify Python version in `pyproject.toml`
+  - MUST use semantic versioning for dependencies
+  - SHOULD NOT use upper version bounds unless required
+  - MUST keep dependencies up to date
+
+- **Scripts Management:**
+  - MUST define common tasks in `[tool.rye.scripts]`
+  - MUST include standard scripts:
+    - `test` for running tests
+    - `lint` for code linting
+    - `format` for code formatting
+    - `typecheck` for type checking
+
+- **Environment Management:**
+  - MUST use rye's built-in virtual environment management
+  - MUST NOT use other virtual environment tools
+  - MUST commit `pyproject.toml` to version control
+  - MUST NOT commit virtual environment files
+
+### 7.2 Command Execution
+- **REQUIRED:** Append `| cat` to commands that may require user interaction
+  ```yaml
+  enforcement:
+    level: "STRICT"
+    validation: "REQUIRED"
+    override_allowed: false
+    blocked_patterns:
+      - pattern: "git log$"
+        reason: "Use git log | cat to prevent pager"
+      - pattern: "less "
+        reason: "Use less ... | cat to prevent pager"
+      - pattern: "more "
+        reason: "Use more ... | cat to prevent pager"
+      - pattern: "head "
+        reason: "Use head ... | cat to prevent pager"
+      - pattern: "tail "
+        reason: "Use tail ... | cat to prevent pager"
+      - pattern: "pytest (?!.*\| cat)"
+        reason: "Use pytest ... | cat to prevent interactive prompts"
+    required_patterns:
+      - pattern: "| cat"
+        validation: "REQUIRED"
+        description: "Append | cat to prevent interactive prompts"
+    file_patterns:
+      - "**/*.sh"
+      - "**/*.py"
+      - "**/*.md"
+
+### 7.3 Project Configuration
+
+- **Project Configuration:**  
+  - Configure projects using a modern `pyproject.toml` file.
+
+- **Testing:**  
+  - Write unit tests and integration tests.
+  - Consider adopting test-driven development (TDD) practices.
+
+- **Version Control:**  
+  - Follow best practices for version control (clear commit messages, feature branching, code reviews).
+
+- **CI/CD:**  
+  - Set up continuous integration and deployment pipelines to automate testing and releases.
+
+# 8. Additional Best Practices
+
+- **Security:**  
+  - Validate all inputs and follow secure coding practices.
+  - Avoid unsafe functions such as `eval` unless absolutely necessary and safe.
+
+- **Performance:**  
+  - Profile critical sections of code and optimize where needed while maintaining readability.
+
+- **Immutability:**  
+  - Use immutable data structures when possible to prevent unintended side effects.
+
+- **Environment Management:**  
+  - Isolate project dependencies using virtual environments or tools like Rye.
+  
+- **Dependency Management:**  
+  - Regularly update and audit dependencies for security and compatibility.
+
+- **Collaboration & Documentation:**  
+  - Maintain clear documentation for design decisions, setup instructions, and code usage.
+  - Encourage code reviews and collaborative development practices.
+
+---
+
+*Following these guidelines will help ensure that our Python projects are clean, efficient, and maintainable, leveraging the latest language features and development practices available in 2025—including the powerful data validation and modeling capabilities of Pydantic v2.10.*
+
+```markdown
+# Cursor Rules for Python Best Practices (2025)
+
+This file outlines the coding standards and best practices for Python projects. Adhere to these rules to maintain a clean, maintainable, and modern codebase, leveraging the latest language features and development workflows—including the use of Pydantic v2.10 for type validation and data modeling.
+
+
+## 1. Code Style & Naming (PEP8)
+
+- **Indentation:**  
+  Use **4 spaces** per indentation level.
+
+- **Naming Conventions:**  
+  - **Variables and functions:** Use `snake_case`.
+  - **Classes:** Use `PascalCase`.
+  - **Constants:** Use `UPPER_CASE_WITH_UNDERSCORES`.
+  
+- **Line Length & Spacing:**  
+  - Limit lines to **79 characters** (or follow project-specific guidelines).  
+  - Use appropriate whitespace around operators and after commas for readability.
+
+---
+
+## 2. Documentation & Readability
+
+- **Docstrings:**  
+  - Use triple-quoted docstrings for modules, classes, and functions.
+  - Follow [PEP 257](mdc:https:/www.python.org/dev/peps/pep-0257) conventions.
+  
+- **Comments:**  
+  - Include clear, concise comments to explain non-obvious code sections.
+
+- **Comprehensions:**  
+  - Leverage list, dict, and set comprehensions to write concise and efficient iterations.
+
+- **Type Hints:**  
+  - Annotate function arguments and return types using Python's type hints.
+  - **Pydantic Enforcement:** Use **Pydantic v2.10** for all data models and settings. Wherever native dataclasses might be used, prefer Pydantic's `BaseModel` to benefit from enhanced runtime validation and clarity.
+  - Use static type checkers (e.g., `mypy`) to enforce type correctness.
+
+---
+
+## 3. Exceptions & Resource Management
+
+- **Error Handling:**  
+  - Use explicit exception handling rather than bare `except:` clauses.
+  - Define custom exceptions where it adds clarity to error conditions.
+
+- **Resource Management:**  
+  - Utilize context managers (i.e., the `with` statement) to manage resources such as file I/O and network connections.
+
+---
+
+## 4. Modular Design & Code Organization
+
+- **Modularity:**  
+  - Structure your code into logical modules and packages.
+  - Each module should encapsulate a single, well-defined responsibility.
+
+- **Avoid Globals:**  
+  - Limit the use of global variables to keep the codebase predictable and testable.
+
+- **Single Responsibility Principle:**  
+  - Ensure that each function or class has one clear responsibility.
+  
+- **Decoupling:**  
+  - Write modular, decoupled code to facilitate maintenance and unit testing.
+
+---
+
+## 5. Modern Python Features
+
+- **Pattern Matching:**  
+  - Use structural pattern matching (introduced in Python 3.10+) where applicable.
+
+- **Async Programming:**  
+  - Employ `async`/`await` for asynchronous I/O operations to improve performance.
+
+- **F-Strings:**  
+  - Use f-strings for readable and efficient string formatting.
+
+- **Pydantic Models:**  
+  - **Preferred Data Modeling:** Replace native dataclasses with **Pydantic v2.10** models by subclassing `pydantic.BaseModel`.  
+  - **Enhanced Validation:** Leverage Pydantic's type validation and serialization features.  
+  - **Modern Syntax:** Utilize the new field validation decorators (e.g., `@field_validator`) and the `model_config` attribute for configuring model behavior instead of the traditional inner `Config` class.
+  - **Consistency:** Apply these practices across the codebase to ensure robust type checking, clear error messaging, and improved runtime performance.
+
+---
+
+## 6. Development Tools & Practices
+
+### 6.1 Package Management
+- **REQUIRED:** Use Rye for all Python package management
+  ```yaml
+  enforcement:
+    level: "STRICT"
+    validation: "REQUIRED"
+    override_allowed: false
+    blocked_patterns:
+      - pattern: "pip install"
+        reason: "Use rye for package management"
+      - pattern: "requirements.txt"
+        reason: "Use pyproject.toml with rye"
+      - pattern: "setup.py"
+        reason: "Use pyproject.toml with rye"
+    required_patterns:
+      - pattern: |
+          [tool.rye]
+          managed = true
+          dev-dependencies = [...]
+          
+          [tool.rye.scripts]
+          test = "pytest tests/"
+          lint = "ruff check ."
+          format = "ruff format ."
+        validation: "STRICT"
+    file_patterns:
+      - "**/*.py"
+      - "**/*.toml"
+      - "**/*.md"
+      - "**/*.sh"
+  ```
+
+- **Project Structure:**
+  - MUST use `pyproject.toml` for project configuration
+  - MUST NOT use `requirements.txt` or `setup.py`
+  - MUST include `[tool.rye]` section in `pyproject.toml`
+  - MUST use rye for dependency management:
+    - `rye sync` for installing dependencies
+    - `rye add` for adding dependencies
+    - `rye remove` for removing dependencies
+    - `rye run` for running scripts
+
+- **Version Management:**
+  - MUST specify Python version in `pyproject.toml`
+  - MUST use semantic versioning for dependencies
+  - SHOULD NOT use upper version bounds unless required
+  - MUST keep dependencies up to date
+
+- **Scripts Management:**
+  - MUST define common tasks in `[tool.rye.scripts]`
+  - MUST include standard scripts:
+    - `test` for running tests
+    - `lint` for code linting
+    - `format` for code formatting
+    - `typecheck` for type checking
+
+- **Environment Management:**
+  - MUST use rye's built-in virtual environment management
+  - MUST NOT use other virtual environment tools
+  - MUST commit `pyproject.toml` to version control
+  - MUST NOT commit virtual environment files
+
+### 6.2 Command Execution
+- **REQUIRED:** Append `| cat` to commands that may require user interaction
+  ```yaml
+  enforcement:
+    level: "STRICT"
+    validation: "REQUIRED"
+    override_allowed: false
+    blocked_patterns:
+      - pattern: "git log$"
+        reason: "Use git log | cat to prevent pager"
+      - pattern: "less "
+        reason: "Use less ... | cat to prevent pager"
+      - pattern: "more "
+        reason: "Use more ... | cat to prevent pager"
+      - pattern: "head "
+        reason: "Use head ... | cat to prevent pager"
+      - pattern: "tail "
+        reason: "Use tail ... | cat to prevent pager"
+      - pattern: "pytest (?!.*\| cat)"
+        reason: "Use pytest ... | cat to prevent interactive prompts"
+    required_patterns:
+      - pattern: "| cat"
+        validation: "REQUIRED"
+        description: "Append | cat to prevent interactive prompts"
+    file_patterns:
+      - "**/*.sh"
+      - "**/*.py"
+      - "**/*.md"
+
+### 6.3 Project Configuration
+
+- **Project Configuration:**  
+  - Configure projects using a modern `pyproject.toml` file.
+
+- **Testing:**  
+  - Write unit tests and integration tests.
+  - Consider adopting test-driven development (TDD) practices.
+
+- **Version Control:**  
+  - Follow best practices for version control (clear commit messages, feature branching, code reviews).
+
+- **CI/CD:**  
+  - Set up continuous integration and deployment pipelines to automate testing and releases.
+
+---
+
+## 7. Additional Best Practices
+
+- **Security:**  
+  - Validate all inputs and follow secure coding practices.
+  - Avoid unsafe functions such as `eval` unless absolutely necessary and safe.
+
+- **Performance:**  
+  - Profile critical sections of code and optimize where needed while maintaining readability.
+
+- **Immutability:**  
+  - Use immutable data structures when possible to prevent unintended side effects.
+
+- **Environment Management:**  
+  - Isolate project dependencies using virtual environments or tools like Rye.
+  
+- **Dependency Management:**  
+  - Regularly update and audit dependencies for security and compatibility.
+
+- **Collaboration & Documentation:**  
+  - Maintain clear documentation for design decisions, setup instructions, and code usage.
+  - Encourage code reviews and collaborative development practices.
+
+---
+
+*Following these guidelines will help ensure that our Python projects are clean, efficient, and maintainable, leveraging the latest language features and development practices available in 2025—including the powerful data validation and modeling capabilities of Pydantic v2.10.*
+```
+
+This file can be saved (for example, as `cursor_rules.md`) and shared with your team to enforce consistent adherence to these updated best practices.

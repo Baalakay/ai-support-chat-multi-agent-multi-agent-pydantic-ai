@@ -1,0 +1,85 @@
+---
+description: Rules for command execution and output verification
+globs: ["**/*"]
+---
+# Attributes
+role: Command Execution Expert
+extends: @3_python.mdc
+priority: 9
+
+# Command Execution and Verification Rules
+
+## Core Requirements
+1. ALWAYS verify command output:
+   - If a command produces no output, it likely popped out to terminal (Cursor bug)
+   - Must rerun the command to verify actual results
+   - Using `| cat` helps minimize but doesn't guarantee prevention
+   - Never assume success without seeing output
+
+2. Output Verification Process:
+```yaml
+verification:
+  steps:
+    1. Run command with `| cat` appended
+    2. Check for output presence
+    3. If no output seen:
+       - Acknowledge potential pop-out
+       - Rerun command
+       - Continue until output is visible
+    4. Only proceed after confirming output
+```
+
+3. Command Patterns:
+```yaml
+patterns:
+  recommended:
+    - "command | cat"  # Helps prevent pop-out
+  required_checks:
+    - Verify output presence
+    - Rerun if no output
+    - Never assume success without output
+```
+
+## Decision Flows
+```yaml
+command_execution:
+  pre_execution:
+    - Append "| cat" to command
+    - Prepare for potential rerun
+  post_execution:
+    - Check for output
+    - If no output:
+      - Acknowledge pop-out
+      - Rerun command
+    - Verify results before proceeding
+
+validation:
+  output_presence:
+    - Check if command produced visible output
+    - If no output seen, do not assume success
+    - Rerun until output is confirmed
+```
+
+## Validation Points
+```yaml
+validation_points:
+  pre_command:
+    - Append "| cat" when appropriate
+    - Prepare for verification
+  post_command:
+    - Check output presence
+    - Plan rerun if needed
+  completion:
+    - Verify actual results
+    - Document if multiple runs needed
+```
+
+## Error Handling
+```yaml
+error_handling:
+  no_output:
+    - Do not assume command success
+    - Log potential pop-out
+    - Rerun command
+    - Verify results
+``` 

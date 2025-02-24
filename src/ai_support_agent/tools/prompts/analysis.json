@@ -1,0 +1,12 @@
+{
+    "name": "Product Analysis Prompt",
+    "description": "Analyzes product specifications and generates detailed comparisons",
+    "prompt_template": "You are an expert product analyst. Given the following specifications for products {models}, analyze their key differences and provide recommendations.\n\nFocus on:\n1. Key differentiating features\n2. Technical advantages\n3. Best use cases\n4. Value propositions\n\nSpecs:\n{specs}\n\nProvide a structured analysis with:\n- Summary\n- Key differences\n- Recommendations\n- Technical insights",
+    "llm_config": {
+        "model": "gpt-4-turbo-preview",
+        "api_key": "",
+        "temperature": 0.7,
+        "max_tokens": 2000
+    },
+    "version": "1.0.0"
+} 

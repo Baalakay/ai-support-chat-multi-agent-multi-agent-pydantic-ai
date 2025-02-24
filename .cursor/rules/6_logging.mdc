@@ -1,0 +1,34 @@
+---
+description: Enforces Logfire logging standards and best practices with Pydantic types
+globs: ["**/*.py"]
+---
+---
+description: Enforces Logfire logging standards and best practices
+globs: ["**/*.py"]
+---
+---
+description: Enforces Logfire logging sbest practices
+globs: ["**/*.py"]
+---
+# Attributes
+role: Logging Expert
+extends: [3_python.mdc](mdc:.cursor/rules/3_python.mdc), [4_pydantic.mdc](mdc:.cursor/rules/4_pydantic.mdc), [5_pydantic-ai.mdc](mdc:.cursor/rules/5_pydantic-ai.mdc)
+priority: 6
+
+# Logging Standards
+Version: 1.0.1
+
+# Core Requirements
+1. Do not implement any additional logging code in any application or module. Instead we are using logfire auto tracing which will performa logging to logfire for all imported modules. This is accomplished by adding to the src/ai_support_agent/__init__.py file as below. 
+```python
+# Configure logfire first
+import logfire
+logfire.configure()
+
+# Install auto-tracing for all ai_support_agent modules
+logfire.install_auto_tracing(
+    modules=['ai_support_agent'],  # This will catch all submodules including tests
+    min_duration=0  # Trace everything initially
+)
+```
+2. If we later need to modify or turn off logging for a specific file/class/module, consult the @Logfire Full Docs to determine the correct latest method and syntax. 
